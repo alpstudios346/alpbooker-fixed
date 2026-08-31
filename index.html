@@ -14,7 +14,7 @@
             theme: {
                 extend: {
                     colors: {
-                        alpBlue: { 500: '#3b82f6', 600: '#2563eb' }
+                        brandBlue: { 500: '#3b82f6', 600: '#2563eb' }
                     }
                 }
             }
@@ -28,18 +28,21 @@
         .dark ::-webkit-scrollbar-thumb { background: #475569; }
         .loader { border: 3px solid rgba(255,255,255,0.3); border-radius: 50%; border-top: 3px solid #3b82f6; width: 20px; height: 20px; animation: spin 0.8s linear infinite; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        
+        .book-stage { perspective: 2000px; }
+        .page-shadow { box-shadow: 0 20px 40px -15px rgba(0,0,0,0.15), 0 0 15px rgba(0,0,0,0.05); }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-800 dark:bg-slate-950 dark:text-slate-100 min-h-screen flex flex-col">
+<body class="bg-slate-100 text-slate-800 dark:bg-slate-950 dark:text-slate-100 min-h-screen flex flex-col">
 
-    <!-- Header -->
-    <header class="sticky top-0 z-30 border-b border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md">
+    <!-- Top Navbar -->
+    <header class="sticky top-0 z-40 border-b border-slate-200 dark:border-slate-800 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md">
         <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
             <div class="flex items-center gap-3 cursor-pointer" onclick="showDashboard()">
-                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center text-white font-bold shadow-lg">AB</div>
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center text-white font-black shadow-lg">AB</div>
                 <div>
-                    <h1 class="text-lg font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-purple-600">AlpBooker</h1>
-                    <p class="text-[10px] text-slate-500 font-semibold uppercase">Alp Studios 346</p>
+                    <h1 class="text-base font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600">AlpBooker</h1>
+                    <p class="text-[10px] text-slate-500 font-semibold uppercase tracking-wider">Alp Studios 346</p>
                 </div>
             </div>
 
@@ -48,111 +51,139 @@
                     <span id="themeIcon">🌙</span>
                 </button>
                 <div id="editorHeaderActions" class="hidden flex items-center gap-2">
-                    <button onclick="showDashboard()" class="px-3.5 py-2 text-sm font-semibold rounded-xl border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800">Projeler</button>
-                    <button onclick="addNewPage()" class="px-3.5 py-2 text-sm font-semibold text-white bg-emerald-600 hover:bg-emerald-700 rounded-xl shadow-md flex items-center gap-1"><span>+</span> Resim Sayfası Ekle</button>
-                    <button onclick="togglePageManager()" class="px-3.5 py-2 text-sm font-semibold rounded-xl border border-blue-500 text-blue-600 hover:bg-blue-50 dark:hover:bg-slate-800">Sayfa Yönetimi</button>
-                    <button onclick="openShareModal()" class="px-4 py-2 text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-xl shadow-md">Paylaş</button>
+                    <button onclick="showDashboard()" class="px-3.5 py-2 text-xs font-bold rounded-xl border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800">Kitaplık</button>
+                    <button onclick="addNewPage()" class="px-3.5 py-2 text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-700 rounded-xl shadow-md flex items-center gap-1"><span>+</span> Sayfa Ekle</button>
+                    <button onclick="togglePageManager()" class="px-3.5 py-2 text-xs font-bold rounded-xl border border-blue-500 text-blue-600 hover:bg-blue-50 dark:hover:bg-slate-800">Sayfalar</button>
+                    <button onclick="openShareModal()" class="px-4 py-2 text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-xl shadow-md">Paylaş & Yayınla</button>
                 </div>
             </div>
         </div>
     </header>
 
-    <!-- Main Content -->
-    <main class="flex-grow max-w-7xl w-full mx-auto px-4 py-8 relative">
+    <!-- Main Section -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 py-8 relative flex flex-col">
         
-        <!-- Toggleable Page Manager Drawer -->
-        <div id="pageManagerDrawer" class="hidden mb-6 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xl space-y-4">
+        <!-- Page Manager Drawer Panel -->
+        <div id="pageManagerDrawer" class="hidden mb-6 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xl space-y-4 z-30">
             <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
-                <h3 class="font-bold text-sm text-slate-700 dark:text-slate-200 uppercase tracking-wider">RESİM SAYFA YÖNETİMİ</h3>
-                <button onclick="togglePageManager()" class="text-slate-400 hover:text-slate-600 font-bold text-sm">✕ Kapat</button>
+                <h3 class="font-bold text-xs text-slate-700 dark:text-slate-200 uppercase tracking-wider">AlpBook Sayfa Listesi</h3>
+                <button onclick="togglePageManager()" class="text-slate-400 hover:text-slate-600 font-bold text-xs">✕ Kapat</button>
             </div>
-            <div id="pageManagerContent" class="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                <!-- Pages generated dynamically -->
-            </div>
-            <div class="flex justify-between pt-2 border-t border-slate-100 dark:border-slate-800">
-                <button onclick="deleteAllPages()" class="text-xs text-red-500 hover:underline font-bold">Tümünü Sil</button>
-            </div>
+            <div id="pageManagerContent" class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-4 max-h-64 overflow-y-auto p-1"></div>
         </div>
 
-        <!-- Dashboard View -->
-        <div id="dashboardView" class="space-y-8">
+        <!-- Dashboard View (Bookshelf) -->
+        <div id="dashboardView" class="space-y-8 flex-grow">
             <div class="rounded-3xl bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-700 p-8 sm:p-12 text-white shadow-2xl relative overflow-hidden">
                 <div class="relative z-10 max-w-xl">
                     <span class="px-3 py-1 rounded-full bg-white/20 text-xs font-bold uppercase tracking-wider mb-4 inline-block">Alp Studios 346</span>
-                    <h2 class="text-3xl sm:text-4xl font-black mb-4">Hoş geldin! <br>Resim Tabanlı Kitap Oluştur</h2>
-                    <p class="text-blue-100 text-sm mb-6">Her sayfaya özel görseller yükleyerek harika albümler ve resimli hikayeler tasarla.</p>
-                    <button onclick="openNewProjectModal()" class="px-6 py-3 rounded-2xl bg-white text-blue-700 font-bold text-sm shadow-lg hover:bg-blue-50 transition">Yeni Proje Başlat</button>
+                    <h2 class="text-3xl sm:text-4xl font-black mb-4">Dijital Kitap ve Dergiler <br>İnteraktif Sayfa Deneyimi</h2>
+                    <p class="text-blue-100 text-sm mb-6">Görsellerini ve hikayelerini yükle, gerçekçi sayfa çevirme efektleriyle interaktif AlpBook projeleri tasarla.</p>
+                    <button onclick="openNewProjectModal()" class="px-6 py-3 rounded-2xl bg-white text-blue-700 font-bold text-xs shadow-lg hover:bg-blue-50 transition">Yeni AlpBook Başlat</button>
                 </div>
             </div>
 
             <div>
                 <div class="flex items-center justify-between mb-6">
-                    <h3 class="text-lg font-bold">Kayıtlı Kitapların</h3>
+                    <h3 class="text-base font-bold">Kayıtlı AlpBook Projelerim</h3>
                     <span id="projectCount" class="text-xs font-semibold px-3 py-1 rounded-full bg-slate-200 dark:bg-slate-800">0 Kitap</span>
                 </div>
                 <div id="projectsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
             </div>
         </div>
 
-        <!-- Editor View (Only Image Pages) -->
-        <div id="editorView" class="hidden flex flex-col lg:flex-row gap-8">
-            <!-- Sidebar Controls -->
-            <div class="w-full lg:w-1/3 space-y-6">
-                <div class="p-6 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm space-y-4">
-                    <h3 class="font-bold text-sm text-slate-500 uppercase tracking-wider">Albüm / Kitap Ayarları</h3>
+        <!-- AlpBook Reader & Editor Studio View -->
+        <div id="editorView" class="hidden flex-col flex-grow space-y-6">
+            
+            <!-- Top Controls Bar -->
+            <div class="flex items-center justify-between p-4 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm">
+                <div class="flex items-center gap-4">
                     <div>
-                        <label class="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1">Kitap Başlığı</label>
-                        <input type="text" id="bookTitle" class="w-full px-3.5 py-2.5 text-sm rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <input type="text" id="bookTitleInput" oninput="autoSave()" class="font-black text-base bg-transparent border-b border-transparent hover:border-slate-300 focus:border-blue-500 focus:outline-none px-1">
+                        <p class="text-[10px] text-slate-400 px-1">Yazar: <span id="bookAuthorDisplay">Alp Studios 346</span></p>
                     </div>
-                    <div>
-                        <label class="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1">Yapımcı / Yazar</label>
-                        <input type="text" id="bookAuthor" class="w-full px-3.5 py-2.5 text-sm rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                    </div>
-                    <button onclick="saveCurrentProject()" class="w-full py-2.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 font-bold text-xs rounded-xl transition">Değişiklikleri Kaydet</button>
                 </div>
-
-                <!-- AlpAI Image Assistant Panel -->
-                <div class="p-6 rounded-2xl border border-purple-200 dark:border-purple-900/40 bg-gradient-to-b from-purple-50/50 to-white dark:from-purple-950/20 dark:to-slate-900 shadow-sm space-y-4">
-                    <div class="flex items-center gap-2">
-                        <div class="w-8 h-8 rounded-lg bg-purple-600 text-white font-bold flex items-center justify-center text-xs">AI</div>
-                        <div>
-                            <h3 class="font-bold text-sm">AlpAI Görsel Üretici</h3>
-                            <p class="text-[11px] text-slate-500">Yapay Zeka Resim Asistanı</p>
-                        </div>
-                    </div>
-                    <div>
-                        <textarea id="aiPrompt" rows="3" placeholder="Çizilmesini istediğin resmi tarif et..." class="w-full p-3 text-xs rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 focus:outline-none focus:ring-2 focus:ring-purple-500 resize-none"></textarea>
-                    </div>
-                    <button onclick="alpAiGenerateImage()" id="aiImgBtn" class="w-full py-2.5 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-semibold text-xs transition">Bu Sayfaya AI Resim Ekle</button>
+                <div class="flex items-center gap-2">
+                    <button onclick="prevPage()" class="px-4 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 font-bold text-xs transition">◀ Önceki Sayfa</button>
+                    <span id="pageIndicatorText" class="text-xs font-extrabold px-3 py-2 bg-blue-50 dark:bg-blue-950/40 text-blue-600 rounded-xl">1 / 1</span>
+                    <button onclick="nextPage()" class="px-4 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 font-bold text-xs transition">Sonraki Sayfa ▶</button>
                 </div>
             </div>
 
-            <!-- Editor Workarea (Pure Image Canvas) -->
-            <div class="w-full lg:w-2/3 flex flex-col">
-                <div class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xl flex flex-col flex-grow overflow-hidden">
+            <!-- Central Stage -->
+            <div class="flex-grow flex flex-col lg:flex-row gap-6 items-stretch min-h-[550px]">
+                
+                <!-- Interactive Reader Viewer -->
+                <div class="w-full lg:w-3/4 flex flex-col items-center justify-center p-6 rounded-3xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xl relative book-stage overflow-hidden">
                     
-                    <!-- Toolbar -->
-                    <div class="p-3 border-b border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/80 flex items-center justify-between flex-wrap">
-                        <span id="pageIndicator" class="text-xs font-bold text-slate-500">Aktif Sayfa: 1</span>
-                        <label class="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold cursor-pointer shadow-md transition">
-                            📷 Bu Sayfaya Resim Yükle
-                            <input type="file" accept="image/*" class="hidden" onchange="uploadPageImage(event)">
-                        </label>
+                    <div id="bookSheetContainer" class="w-full max-w-3xl aspect-[4/3] bg-slate-50 dark:bg-slate-950 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-2xl flex flex-col md:flex-row overflow-hidden relative page-shadow">
+                        
+                        <!-- Left Page -->
+                        <div class="w-full md:w-1/2 h-full p-6 flex flex-col items-center justify-center border-r border-slate-200 dark:border-slate-800 relative bg-white dark:bg-slate-950 group">
+                            <div id="leftPageContent" class="w-full h-full flex flex-col items-center justify-center text-center cursor-pointer" onclick="document.getElementById('fileUploadInput').click()">
+                                <div class="space-y-2">
+                                    <span class="text-3xl">📖</span>
+                                    <p class="text-xs font-bold text-slate-600 dark:text-slate-300">Sol Sayfa Görseli</p>
+                                    <p class="text-[10px] text-slate-400">Yüklemek için tıklayın</p>
+                                </div>
+                            </div>
+                            <img id="leftPageImg" class="hidden absolute inset-0 w-full h-full object-cover cursor-pointer" onclick="document.getElementById('fileUploadInput').click()">
+                        </div>
+
+                        <!-- Right Page -->
+                        <div class="w-full md:w-1/2 h-full p-6 flex flex-col items-center justify-center relative bg-white dark:bg-slate-950 group">
+                            <div id="rightPageContent" class="w-full h-full flex flex-col items-center justify-center text-center cursor-pointer" onclick="document.getElementById('fileUploadInput').click()">
+                                <div class="space-y-2">
+                                    <span class="text-3xl">✨</span>
+                                    <p class="text-xs font-bold text-slate-600 dark:text-slate-300">Sağ Sayfa Görseli</p>
+                                    <p class="text-[10px] text-slate-400">İçerik eklemek için tıklayın</p>
+                                </div>
+                            </div>
+                            <img id="rightPageImg" class="hidden absolute inset-0 w-full h-full object-cover cursor-pointer" onclick="document.getElementById('fileUploadInput').click()">
+                        </div>
+
                     </div>
 
-                    <!-- Canvas Image Display Area -->
-                    <div id="exportContainer" class="p-8 sm:p-12 flex-grow overflow-y-auto bg-white dark:bg-slate-950 flex flex-col items-center justify-center min-h-[500px]">
-                        <div id="imageCanvasWrapper" class="w-full h-full flex flex-col items-center justify-center border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-3xl p-6 text-center cursor-pointer hover:border-blue-500 transition relative" onclick="document.getElementById('hiddenFileInput').click()">
-                            <input type="file" id="hiddenFileInput" accept="image/*" class="hidden" onchange="uploadPageImage(event)">
-                            <div id="emptyImagePlaceholder" class="space-y-3">
-                                <span class="text-4xl">🖼️</span>
-                                <p class="text-sm font-bold text-slate-600 dark:text-slate-300">Bu sayfada henüz resim yok</p>
-                                <p class="text-xs text-slate-400">Resim yüklemek için tıklayın ya da yukarıdaki butonu kullanın.</p>
-                            </div>
-                            <img id="currentPageImage" class="hidden max-h-[500px] w-auto rounded-2xl shadow-lg object-contain" />
-                        </div>
+                    <div class="absolute bottom-4 flex items-center gap-4 bg-slate-900/80 backdrop-blur-md px-4 py-2 rounded-2xl text-white text-xs">
+                        <span class="font-medium">AlpBook İnteraktif Mod Aktif</span>
                     </div>
                 </div>
+
+                <!-- Right Sidebar Editor Tools -->
+                <div class="w-full lg:w-1/4 space-y-4">
+                    <div class="p-6 rounded-3xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm space-y-4">
+                        <h3 class="font-bold text-xs text-slate-500 uppercase tracking-wider">Sayfa Düzenleyici</h3>
+                        
+                        <div>
+                            <label class="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1">Sayfa Resmi</label>
+                            <label class="w-full py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold flex items-center justify-center gap-2 cursor-pointer shadow-md transition">
+                                📷 Resim Yükle / Değiştir
+                                <input type="file" id="fileUploadInput" accept="image/*" class="hidden" onchange="handleImageUpload(event)">
+                            </label>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1">Sayfa Notu / Açıklaması</label>
+                            <textarea id="pageTextInput" rows="4" oninput="updatePageText(this.value)" placeholder="Bu sayfaya ait metni yazın..." class="w-full p-3 text-xs rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"></textarea>
+                        </div>
+
+                        <button onclick="deleteCurrentPage()" class="w-full py-2.5 rounded-xl border border-red-200 text-red-500 hover:bg-red-50 dark:hover:bg-red-950/30 font-bold text-xs transition">Bu Sayfayı Sil</button>
+                    </div>
+
+                    <!-- AI Assistant Panel -->
+                    <div class="p-6 rounded-3xl border border-purple-200 dark:border-purple-900/40 bg-gradient-to-b from-purple-50/50 to-white dark:from-purple-950/20 dark:to-slate-900 shadow-sm space-y-3">
+                        <div class="flex items-center gap-2">
+                            <div class="w-7 h-7 rounded-lg bg-purple-600 text-white font-bold flex items-center justify-center text-[10px]">AI</div>
+                            <div>
+                                <h3 class="font-bold text-xs">AlpAI Görsel Üretici</h3>
+                                <p class="text-[10px] text-slate-500">Otomatik Sayfa Tasarımı</p>
+                            </div>
+                        </div>
+                        <input type="text" id="aiPrompt" placeholder="Örn: Geleceğin teknoloji şehri..." class="w-full p-2.5 text-xs rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 focus:outline-none focus:ring-2 focus:ring-purple-500">
+                        <button onclick="generateAiPageImage()" id="aiBtn" class="w-full py-2.5 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-semibold text-xs transition">AI İle Sayfa Tasarla</button>
+                    </div>
+                </div>
+
             </div>
         </div>
     </main>
@@ -160,51 +191,51 @@
     <!-- New Project Modal -->
     <div id="newProjectModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-slate-950/60 backdrop-blur-sm">
         <div class="bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl border border-slate-200 dark:border-slate-800 space-y-4">
-            <h3 class="text-xl font-black">Yeni Proje Başlat</h3>
+            <h3 class="text-lg font-black">Yeni AlpBook Projesi</h3>
             <div>
-                <label class="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1">Kitap Başlığı</label>
+                <label class="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1">Kitap Adı</label>
                 <input type="text" id="modalTitle" class="w-full px-3.5 py-2.5 text-sm rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950">
             </div>
             <div>
-                <label class="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1">Yapımcı / Yazar</label>
-                <input type="text" id="modalAuthor" class="w-full px-3.5 py-2.5 text-sm rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950">
+                <label class="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1">Yazar / Şirket</label>
+                <input type="text" id="modalAuthor" value="Alp Studios 346" class="w-full px-3.5 py-2.5 text-sm rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950">
             </div>
             <div class="flex gap-2 pt-2">
-                <button onclick="closeNewProjectModal()" class="w-1/2 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 text-sm font-semibold">İptal</button>
-                <button onclick="createProject()" class="w-1/2 py-2.5 rounded-xl bg-blue-600 text-white text-sm font-semibold shadow-md">Oluştur</button>
+                <button onclick="closeNewProjectModal()" class="w-1/2 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 text-xs font-semibold">İptal</button>
+                <button onclick="createNewProject()" class="w-1/2 py-2.5 rounded-xl bg-blue-600 text-white text-xs font-semibold shadow-md">Oluştur</button>
             </div>
         </div>
     </div>
 
-    <!-- Share Modal (TinyURL POST Request API Integrated) -->
+    <!-- Share Modal (TinyURL POST API) -->
     <div id="shareModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-slate-950/60 backdrop-blur-sm">
         <div class="bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl border border-slate-200 dark:border-slate-800 space-y-6">
             <div class="flex justify-between items-center">
-                <h3 class="text-lg font-bold">Kitabı Paylaş</h3>
+                <h3 class="text-base font-bold">AlpBook'u Yayınla & Paylaş</h3>
                 <button onclick="closeShareModal()" class="text-slate-400 hover:text-slate-600">✕</button>
             </div>
 
             <div id="shareMainState" class="space-y-3">
-                <button onclick="generateTinyUrlApiRequest()" class="w-full p-4 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold flex items-center justify-between shadow-lg">
+                <button onclick="generateTinyUrlApiRequest()" class="w-full p-4 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold flex items-center justify-between shadow-lg">
                     <span>🔗 TinyURL POST İstegi İle Kısalt</span>
                     <span>→</span>
                 </button>
                 <div class="grid grid-cols-2 gap-3">
-                    <button onclick="exportAsImage()" class="p-4 rounded-2xl border border-slate-200 dark:border-slate-800 text-xs font-semibold hover:bg-slate-50 dark:hover:bg-slate-800 text-center">🖼️ Resmi İndir</button>
                     <button onclick="exportAsPdf()" class="p-4 rounded-2xl border border-slate-200 dark:border-slate-800 text-xs font-semibold hover:bg-slate-50 dark:hover:bg-slate-800 text-center">📄 PDF İndir</button>
+                    <button onclick="exportAsImage()" class="p-4 rounded-2xl border border-slate-200 dark:border-slate-800 text-xs font-semibold hover:bg-slate-50 dark:hover:bg-slate-800 text-center">🖼️ Kapak Resmi Al</button>
                 </div>
             </div>
 
             <div id="shareLoadingState" class="hidden flex-col items-center justify-center py-6 space-y-3">
                 <div class="loader"></div>
-                <p class="text-xs text-slate-500">TinyURL sunucusuna istek atılıyor...</p>
+                <p class="text-xs text-slate-500">TinyURL API sunucusuna bağlanılıyor...</p>
             </div>
 
             <div id="shareResultState" class="hidden flex-col space-y-4">
-                <p class="text-xs text-emerald-600 font-bold text-center">TinyURL Kısa Linki Başarıyla Alındı!</p>
+                <p class="text-xs text-emerald-600 font-bold text-center">AlpBook Linki Başarıyla Üretildi!</p>
                 <div class="flex gap-2">
-                    <input type="text" id="shortLinkInput" readonly class="w-full px-3 py-2 bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-xs">
-                    <button onclick="copyLink()" class="px-4 py-2 bg-blue-600 text-white text-xs font-semibold rounded-xl">Kopyala</button>
+                    <input type="text" id="shortLinkInput" readonly class="w-full px-3 py-2 bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-xs font-mono">
+                    <button onclick="copyShortLink()" class="px-4 py-2 bg-blue-600 text-white text-xs font-semibold rounded-xl">Kopyala</button>
                 </div>
                 <button onclick="resetShareModal()" class="text-xs text-blue-600 underline text-center">Geri Dön</button>
             </div>
@@ -221,23 +252,37 @@
     <script>
         const DEFAULT_AUTHOR = 'Alp Studios 346';
         let appState = {
-            projects: JSON.parse(localStorage.getItem('alpbooker_projects') || '[]'),
+            projects: JSON.parse(localStorage.getItem('alp_books') || '[]'),
             currentId: null,
             currentPageIndex: 0,
-            darkMode: localStorage.getItem('alpbooker_dark') === 'true'
+            darkMode: localStorage.getItem('alp_book_dark') === 'true'
         };
+
+        function playFlipSound() {
+            try {
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(120, ctx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(40, ctx.currentTime + 0.15);
+                gain.gain.setValueAtTime(0.15, ctx.currentTime);
+                gain.gain.linearRampToValueAtTime(0.01, ctx.currentTime + 0.15);
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start();
+                osc.stop(ctx.currentTime + 0.15);
+            } catch(e) {}
+        }
 
         function initApp() {
             if (appState.darkMode) document.documentElement.classList.add('dark');
-            renderProjects();
-
-            document.getElementById('bookTitle').addEventListener('input', autoSave);
-            document.getElementById('bookAuthor').addEventListener('input', autoSave);
+            renderProjectsList();
         }
 
         function toggleTheme() {
             appState.darkMode = !appState.darkMode;
-            localStorage.setItem('alpbooker_dark', appState.darkMode);
+            localStorage.setItem('alp_book_dark', appState.darkMode);
             document.documentElement.classList.toggle('dark', appState.darkMode);
             document.getElementById('themeIcon').textContent = appState.darkMode ? '☀️' : '🌙';
         }
@@ -247,7 +292,7 @@
             document.getElementById('editorView').classList.add('hidden');
             document.getElementById('editorHeaderActions').classList.add('hidden');
             document.getElementById('pageManagerDrawer').classList.add('hidden');
-            renderProjects();
+            renderProjectsList();
         }
 
         function showEditor() {
@@ -260,7 +305,7 @@
             const drawer = document.getElementById('pageManagerDrawer');
             drawer.classList.toggle('hidden');
             if(!drawer.classList.contains('hidden')) {
-                renderPageManagerList();
+                renderPageManagerDrawerList();
             }
         }
 
@@ -268,7 +313,7 @@
             return appState.projects.find(x => x.id === appState.currentId);
         }
 
-        function renderProjects() {
+        function renderProjectsList() {
             const grid = document.getElementById('projectsGrid');
             const count = document.getElementById('projectCount');
             if(!grid || !count) return;
@@ -277,7 +322,7 @@
             count.textContent = `${appState.projects.length} Kitap`;
 
             if (appState.projects.length === 0) {
-                grid.innerHTML = `<div class="col-span-full text-center py-12 text-slate-400 text-xs">Henüz kayıtlı resim projesi yok. Yeni bir tane başlatın!</div>`;
+                grid.innerHTML = `<div class="col-span-full text-center py-12 text-slate-400 text-xs">Henüz kayıtlı AlpBook yok. Yeni bir tane oluşturun!</div>`;
                 return;
             }
 
@@ -285,19 +330,19 @@
                 const card = document.createElement('div');
                 card.className = "bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-sm hover:shadow-xl transition flex flex-col justify-between cursor-pointer";
                 card.onclick = () => openProject(p.id);
-                
-                let hasImg = p.pages && p.pages.length > 0 && p.pages[0];
+
+                let firstImg = p.pages && p.pages[0] ? p.pages[0].image : '';
 
                 card.innerHTML = `
                     <div>
                         <h4 class="font-bold text-base mb-1">${escapeHtml(p.title)}</h4>
                         <p class="text-xs text-slate-500 mb-4">Yazar: ${escapeHtml(p.author)}</p>
-                        <div class="h-24 bg-slate-100 dark:bg-slate-950 rounded-2xl flex items-center justify-center overflow-hidden border border-slate-200 dark:border-slate-800 mb-3">
-                            ${hasImg ? `<img src="${p.pages[0]}" class="h-full w-full object-cover">` : '<span class="text-xs text-slate-400">Resimsiz</span>'}
+                        <div class="h-28 bg-slate-100 dark:bg-slate-950 rounded-2xl flex items-center justify-center overflow-hidden border border-slate-200 dark:border-slate-800 mb-3">
+                            ${firstImg ? `<img src="${firstImg}" class="h-full w-full object-cover">` : '<span class="text-xs text-slate-400">Kapak Yok</span>'}
                         </div>
                     </div>
                     <div class="flex justify-between items-center pt-2 border-t border-slate-100 dark:border-slate-800 text-[10px] text-slate-400">
-                        <span>${(p.pages ? p.pages.length : 1)} Sayfa</span>
+                        <span>${p.pages.length} Sayfa</span>
                         <button onclick="deleteProject(event, '${p.id}')" class="text-red-500 font-bold">Sil</button>
                     </div>
                 `;
@@ -317,15 +362,18 @@
             document.getElementById('newProjectModal').classList.remove('flex');
         }
 
-        function createProject() {
-            const title = document.getElementById('modalTitle').value.trim() || 'Yeni Resimli Kitap';
+        function createNewProject() {
+            const title = document.getElementById('modalTitle').value.trim() || 'Yeni AlpBook';
             const author = document.getElementById('modalAuthor').value.trim() || DEFAULT_AUTHOR;
 
             const newProj = {
-                id: 'proj_' + Date.now(),
+                id: 'book_' + Date.now(),
                 title: title,
                 author: author,
-                pages: [''],
+                pages: [
+                    { image: '', text: 'Kapak Sayfası' },
+                    { image: '', text: 'İkinci Sayfa' }
+                ],
                 updatedAt: Date.now()
             };
 
@@ -333,7 +381,7 @@
             saveStorage();
             closeNewProjectModal();
             openProject(newProj.id);
-            showToast('Resim projesi oluşturuldu!');
+            showToast('AlpBook projesi oluşturuldu!');
         }
 
         function openProject(id) {
@@ -342,49 +390,82 @@
 
             appState.currentId = p.id;
             appState.currentPageIndex = 0;
-            if(!p.pages) p.pages = [''];
 
-            document.getElementById('bookTitle').value = p.title;
-            document.getElementById('bookAuthor').value = p.author;
-            loadPageToCanvas(appState.currentPageIndex);
-
+            document.getElementById('bookTitleInput').value = p.title;
+            document.getElementById('bookAuthorDisplay').textContent = p.author;
+            
+            loadSpreadToViewer();
             showEditor();
         }
 
-        function loadPageToCanvas(index) {
+        function loadSpreadToViewer() {
             const p = getCurrentProject();
             if(!p) return;
 
-            appState.currentPageIndex = index;
-            document.getElementById('pageIndicator').textContent = `Aktif Sayfa: ${index + 1} / ${p.pages.length}`;
-            
-            const imgEl = document.getElementById('currentPageImage');
-            const placeholderEl = document.getElementById('emptyImagePlaceholder');
-            const pageData = p.pages[index];
+            const idx = appState.currentPageIndex;
+            document.getElementById('pageIndicatorText').textContent = `${idx + 1} / ${p.pages.length}`;
 
-            if(pageData && pageData.trim() !== '') {
-                imgEl.src = pageData;
-                imgEl.classList.remove('hidden');
-                placeholderEl.classList.add('hidden');
+            const leftData = p.pages[idx] || { image: '', text: '' };
+            const leftImgEl = document.getElementById('leftPageImg');
+            const leftContentEl = document.getElementById('leftPageContent');
+
+            if(leftData.image) {
+                leftImgEl.src = leftData.image;
+                leftImgEl.classList.remove('hidden');
+                leftContentEl.classList.add('hidden');
             } else {
-                imgEl.src = '';
-                imgEl.classList.add('hidden');
-                placeholderEl.classList.remove('hidden');
+                leftImgEl.src = '';
+                leftImgEl.classList.add('hidden');
+                leftContentEl.classList.remove('hidden');
+            }
+
+            const rightIdx = idx + 1 < p.pages.length ? idx + 1 : idx;
+            const rightData = p.pages[rightIdx] || { image: '', text: '' };
+            const rightImgEl = document.getElementById('rightPageImg');
+            const rightContentEl = document.getElementById('rightPageContent');
+
+            if(rightData.image) {
+                rightImgEl.src = rightData.image;
+                rightImgEl.classList.remove('hidden');
+                rightContentEl.classList.add('hidden');
+            } else {
+                rightImgEl.src = '';
+                rightImgEl.classList.add('hidden');
+                rightContentEl.classList.remove('hidden');
+            }
+
+            document.getElementById('pageTextInput').value = leftData.text || '';
+        }
+
+        function nextPage() {
+            const p = getCurrentProject();
+            if(!p) return;
+            if(appState.currentPageIndex < p.pages.length - 1) {
+                playFlipSound();
+                appState.currentPageIndex++;
+                loadSpreadToViewer();
             }
         }
 
-        function uploadPageImage(e) {
+        function prevPage() {
+            if(appState.currentPageIndex > 0) {
+                playFlipSound();
+                appState.currentPageIndex--;
+                loadSpreadToViewer();
+            }
+        }
+
+        function handleImageUpload(e) {
             const file = e.target.files[0];
             if(file) {
                 const reader = new FileReader();
                 reader.onload = function(evt) {
                     const p = getCurrentProject();
-                    if(p) {
-                        p.pages[appState.currentPageIndex] = evt.target.result;
+                    if(p && p.pages[appState.currentPageIndex]) {
+                        p.pages[appState.currentPageIndex].image = evt.target.result;
                         autoSave();
-                        loadPageToCanvas(appState.currentPageIndex);
-                        renderPageManagerList();
-                        showToast('Sayfa resmi güncellendi!');
+                        loadSpreadToViewer();
+                        showToast('Sayfa görseli güncellendi!');
                     }
                 };
                 reader.readAsDataURL(file);
@@ -392,69 +473,56 @@
             e.target.value = '';
         }
 
+        function updatePageText(val) {
+            const p = getCurrentProject();
+            if(p && p.pages[appState.currentPageIndex]) {
+                p.pages[appState.currentPageIndex].text = val;
+                autoSave();
+            }
+        }
+
         function addNewPage() {
             const p = getCurrentProject();
             if(!p) return;
-            p.pages.push('');
-            loadPageToCanvas(p.pages.length - 1);
+            p.pages.push({ image: '', text: `Sayfa ${p.pages.length + 1}` });
+            appState.currentPageIndex = p.pages.length - 1;
             autoSave();
-            renderPageManagerList();
-            showToast(`Sayfa ${p.pages.length} eklendi.`);
+            loadSpreadToViewer();
+            showToast('Yeni sayfa eklendi.');
         }
 
-        function switchPage(index) {
-            loadPageToCanvas(index);
-            renderPageManagerList();
-        }
-
-        function deletePage(index) {
+        function deleteCurrentPage() {
             const p = getCurrentProject();
             if(!p) return;
             if(p.pages.length <= 1) {
                 showToast('Kitapta en az bir sayfa kalmalıdır.');
                 return;
             }
-            p.pages.splice(index, 1);
+            p.pages.splice(appState.currentPageIndex, 1);
             if(appState.currentPageIndex >= p.pages.length) {
                 appState.currentPageIndex = p.pages.length - 1;
             }
-            loadPageToCanvas(appState.currentPageIndex);
             autoSave();
-            renderPageManagerList();
+            loadSpreadToViewer();
             showToast('Sayfa silindi.');
         }
 
-        function deleteAllPages() {
-            const p = getCurrentProject();
-            if(!p) return;
-            if(confirm('Tüm sayfa resimlerini silmek istediğinize emin misiniz?')) {
-                p.pages = [''];
-                loadPageToCanvas(0);
-                autoSave();
-                renderPageManagerList();
-                showToast('Tüm sayfalar temizlendi.');
-            }
-        }
-
-        function renderPageManagerList() {
+        function renderPageManagerDrawerList() {
             const p = getCurrentProject();
             const container = document.getElementById('pageManagerContent');
             if(!p || !container) return;
 
             container.innerHTML = '';
-            p.pages.forEach((pageData, idx) => {
+            p.pages.forEach((pg, idx) => {
                 const card = document.createElement('div');
                 const isActive = idx === appState.currentPageIndex;
-                card.className = `p-3 rounded-xl border cursor-pointer flex flex-col justify-between transition ${isActive ? 'border-blue-500 bg-blue-50/50 dark:bg-blue-950/20' : 'border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950'}`;
-                card.onclick = () => switchPage(idx);
-                
+                card.className = `p-3 rounded-xl border cursor-pointer flex flex-col items-center justify-between transition ${isActive ? 'border-blue-500 bg-blue-50/50 dark:bg-blue-950/20' : 'border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950'}`;
+                card.onclick = () => { appState.currentPageIndex = idx; loadSpreadToViewer(); playFlipSound(); };
+
                 card.innerHTML = `
-                    <div class="flex items-center justify-between mb-2">
-                        <span class="text-xs font-bold ${isActive ? 'text-blue-600' : 'text-slate-600 dark:text-slate-400'}">Sayfa ${idx + 1}</span>
-                        ${p.pages.length > 1 ? `<button onclick="event.stopPropagation(); deletePage(${idx})" class="text-red-500 text-[10px] font-bold">Sil</button>` : ''}
-                    </div>
-                    <div class="h-16 bg-slate-200 dark:bg-slate-900 rounded-lg flex items-center justify-center overflow-hidden">
-                        ${pageData ? `<img src="${pageData}" class="h-full w-full object-cover">` : '<span class="text-[10px] text-slate-400">Boş</span>'}
+                    <span class="text-[10px] font-bold mb-1 ${isActive ? 'text-blue-600' : 'text-slate-500'}">S. ${idx + 1}</span>
+                    <div class="w-full h-12 bg-slate-200 dark:bg-slate-900 rounded-lg flex items-center justify-center overflow-hidden">
+                        ${pg.image ? `<img src="${pg.image}" class="h-full w-full object-cover">` : '<span class="text-[9px] text-slate-400">Boş</span>'}
                     </div>
                 `;
                 container.appendChild(card);
@@ -464,53 +532,46 @@
         function autoSave() {
             const p = getCurrentProject();
             if(p) {
-                p.title = document.getElementById('bookTitle').value;
-                p.author = document.getElementById('bookAuthor').value;
+                p.title = document.getElementById('bookTitleInput').value;
                 p.updatedAt = Date.now();
                 saveStorage();
             }
         }
 
-        function saveCurrentProject() {
-            autoSave();
-            showToast('Kitap kaydedildi!');
-        }
-
         function deleteProject(e, id) {
             e.stopPropagation();
-            if(confirm('Bu projeyi silmek istediğinize emin misiniz?')) {
+            if(confirm('Bu AlpBook projesini silmek istediğinize emin misiniz?')) {
                 appState.projects = appState.projects.filter(x => x.id !== id);
                 saveStorage();
-                renderProjects();
+                renderProjectsList();
                 showToast('Proje silindi.');
             }
         }
 
         function saveStorage() {
-            localStorage.setItem('alpbooker_projects', JSON.stringify(appState.projects));
+            localStorage.setItem('alp_books', JSON.stringify(appState.projects));
         }
 
-        function alpAiGenerateImage() {
+        function generateAiPageImage() {
             const prompt = document.getElementById('aiPrompt').value.trim();
-            if(!prompt) { showToast('Lütfen bir görsel konusu yazın.'); return; }
-            
-            const btn = document.getElementById('aiImgBtn');
-            btn.textContent = 'AI Çiziyor...';
+            if(!prompt) { showToast('Lütfen AI için bir konu yazın.'); return; }
+
+            const btn = document.getElementById('aiBtn');
+            btn.textContent = 'AI Tasarlıyor...';
             btn.disabled = true;
 
             setTimeout(() => {
-                const dummyAiImg = 'https://picsum.photos/800/600?random=' + Date.now();
+                const randomImg = 'https://picsum.photos/800/600?random=' + Date.now();
                 const p = getCurrentProject();
-                if(p) {
-                    p.pages[appState.currentPageIndex] = dummyAiImg;
+                if(p && p.pages[appState.currentPageIndex]) {
+                    p.pages[appState.currentPageIndex].image = randomImg;
                     autoSave();
-                    loadPageToCanvas(appState.currentPageIndex);
-                    renderPageManagerList();
+                    loadSpreadToViewer();
                 }
-                btn.textContent = 'Bu Sayfaya AI Resim Ekle';
+                btn.textContent = 'AI İle Sayfa Tasarla';
                 btn.disabled = false;
-                showToast('AlpAI resmi sayfaya çizdi!');
-            }, 1200);
+                showToast('AlpAI sayfayı başarıyla çizdi!');
+            }, 1000);
         }
 
         // TinyURL API POST Request Implementation
@@ -519,7 +580,7 @@
             document.getElementById('shareLoadingState').classList.remove('hidden');
 
             const longUrl = window.location.href;
-            
+
             try {
                 const response = await fetch('https://api.tinyurl.com/create', {
                     method: 'POST',
@@ -540,11 +601,9 @@
                 if (data && data.data && data.data.tiny_url) {
                     document.getElementById('shortLinkInput').value = data.data.tiny_url;
                 } else {
-                    // Fallback to GET API if POST requires token or fails on CORS
                     fallbackTinyUrlGet(longUrl);
                 }
             } catch(e) {
-                // CORS or network fallback to GET endpoint
                 fallbackTinyUrlGet(longUrl);
             }
         }
@@ -580,28 +639,28 @@
             document.getElementById('shareResultState').classList.add('hidden');
         }
 
-        function copyLink() {
+        function copyShortLink() {
             const input = document.getElementById('shortLinkInput');
             input.select();
             document.execCommand('copy');
             showToast('TinyURL linki kopyalandı!');
         }
 
-        async function exportAsImage() {
-            const el = document.getElementById('exportContainer');
-            showToast('Resim indiriliyor...');
-            const canvas = await html2canvas(el, { scale: 2 });
-            const link = document.createElement('a');
-            link.download = 'resimli-sayfa.png';
-            link.href = canvas.toDataURL();
-            link.click();
+        async function exportAsPdf() {
+            showToast('PDF hazırlanıyor...');
+            const el = document.getElementById('bookSheetContainer');
+            await html2pdf().from(el).save('alpbook.pdf');
             closeShareModal();
         }
 
-        async function exportAsPdf() {
-            const el = document.getElementById('exportContainer');
-            showToast('PDF hazırlanıyor...');
-            await html2pdf().from(el).save('resimli-kitap.pdf');
+        async function exportAsImage() {
+            showToast('Kapak resmi indiriliyor...');
+            const el = document.getElementById('bookSheetContainer');
+            const canvas = await html2canvas(el, { scale: 2 });
+            const link = document.createElement('a');
+            link.download = 'alpbook-cover.png';
+            link.href = canvas.toDataURL();
+            link.click();
             closeShareModal();
         }
 
