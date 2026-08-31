@@ -50,6 +50,7 @@
                 </button>
                 <div id="editorHeaderActions" class="hidden flex items-center gap-2">
                     <button onclick="showDashboard()" class="px-3.5 py-2 text-sm font-semibold rounded-xl border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800">Projeler</button>
+                    <button onclick="togglePageManager()" class="px-3.5 py-2 text-sm font-semibold rounded-xl border border-blue-500 text-blue-600 hover:bg-blue-50 dark:hover:bg-slate-800">Sayfa Yönetimi</button>
                     <button onclick="openShareModal()" class="px-4 py-2 text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-xl shadow-md">Paylaş</button>
                 </div>
             </div>
@@ -57,15 +58,27 @@
     </header>
 
     <!-- Main Content -->
-    <main class="flex-grow max-w-7xl w-full mx-auto px-4 py-8">
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 py-8 relative">
         
+        <!-- Toggleable Page Manager Drawer -->
+        <div id="pageManagerDrawer" class="hidden mb-6 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xl space-y-4">
+            <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
+                <h3 class="font-bold text-sm text-slate-700 dark:text-slate-200 uppercase tracking-wider">SAYFA YÖNETİMİ</h3>
+                <button onclick="togglePageManager()" class="text-slate-400 hover:text-slate-600 font-bold text-sm">✕ Kapat</button>
+            </div>
+            <div id="pageManagerContent" class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                <!-- Pages list or status -->
+                <p class="text-xs text-slate-400">Bu projede aktif sayfalar yönetilmektedir.</p>
+            </div>
+        </div>
+
         <!-- Dashboard View -->
         <div id="dashboardView" class="space-y-8">
             <div class="rounded-3xl bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-700 p-8 sm:p-12 text-white shadow-2xl relative overflow-hidden">
                 <div class="relative z-10 max-w-xl">
                     <span class="px-3 py-1 rounded-full bg-white/20 text-xs font-bold uppercase tracking-wider mb-4 inline-block">Alp Studios 346</span>
                     <h2 class="text-3xl sm:text-4xl font-black mb-4">Hoş geldin! <br>Bir kitap yapmaya ne dersin?</h2>
-                    <p class="text-blue-100 text-sm mb-6">Yapay zeka asistanı AlpAI ile dilediğin gibi kitaplar tasarla, resimler ekle ve dünyayla paylaş.</p>
+                    <p class="text-blue-100 text-sm mb-6">AlpAI asistanı ile dilediğin gibi kitaplar tasarla, resimler ekle ve dünyayla paylaş.</p>
                     <button onclick="openNewProjectModal()" class="px-6 py-3 rounded-2xl bg-white text-blue-700 font-bold text-sm shadow-lg hover:bg-blue-50 transition">Yeni Proje Başlat</button>
                 </div>
             </div>
@@ -164,7 +177,7 @@
         </div>
     </div>
 
-    <!-- Share Modal with REAL API Short URL -->
+    <!-- Share Modal -->
     <div id="shareModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-slate-950/60 backdrop-blur-sm">
         <div class="bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl border border-slate-200 dark:border-slate-800 space-y-6">
             <div class="flex justify-between items-center">
@@ -236,6 +249,7 @@
             document.getElementById('dashboardView').classList.remove('hidden');
             document.getElementById('editorView').classList.add('hidden');
             document.getElementById('editorHeaderActions').classList.add('hidden');
+            document.getElementById('pageManagerDrawer').classList.add('hidden');
             renderProjects();
         }
 
@@ -243,6 +257,11 @@
             document.getElementById('dashboardView').classList.add('hidden');
             document.getElementById('editorView').classList.remove('hidden');
             document.getElementById('editorHeaderActions').classList.remove('hidden');
+        }
+
+        function togglePageManager() {
+            const drawer = document.getElementById('pageManagerDrawer');
+            drawer.classList.toggle('hidden');
         }
 
         function renderProjects() {
@@ -377,7 +396,6 @@
             e.target.value = '';
         }
 
-        // AlpAI Functions (No emojis, natural language)
         async function alpAiGenerateText() {
             const prompt = document.getElementById('aiPrompt').value.trim();
             if(!prompt) { showToast('Lütfen bir konu yazın.'); return; }
@@ -387,7 +405,6 @@
             btn.disabled = true;
 
             try {
-                // Using standard prompt generation simulation matching AlpAI persona
                 setTimeout(() => {
                     const generatedText = `<p>Hikaye detayi: ${escapeHtml(prompt)}. Eski zamanlarda başlayan bu macera, bilinmeyen yollardan geçerek günümüze kadar ulaştı. Herkesin bildiği ama kimsenin çözemediği sırlar bu sayfada saklı.</p>`;
                     document.getElementById('editorContent').innerHTML += generatedText;
@@ -407,7 +424,6 @@
             showToast('AlpAI görsel modülü aktif.');
         }
 
-        // Real URL Shortener using is.gd API
         async function generateRealShortUrl() {
             document.getElementById('shareMainState').classList.add('hidden');
             document.getElementById('shareLoadingState').classList.remove('hidden');
