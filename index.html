@@ -30,7 +30,7 @@
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         
         .book-stage { perspective: 2000px; }
-        .page-shadow { box-shadow: 0 20px 40px -15px rgba(0,0,0,0.15), 0 0 15px rgba(0,0,0,0.05); }
+        .page-shadow { box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25), 0 0 20px rgba(0,0,0,0.08); }
     </style>
 </head>
 <body class="bg-slate-100 text-slate-800 dark:bg-slate-950 dark:text-slate-100 min-h-screen flex flex-col">
@@ -66,7 +66,7 @@
         <!-- Page Manager Drawer Panel -->
         <div id="pageManagerDrawer" class="hidden mb-6 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xl space-y-4 z-30">
             <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
-                <h3 class="font-bold text-xs text-slate-700 dark:text-slate-200 uppercase tracking-wider">AlpBook Sayfa Listesi</h3>
+                <h3 class="font-bold text-xs text-slate-700 dark:text-slate-200 uppercase tracking-wider">AlpBook Sayfa Görsel Listesi</h3>
                 <button onclick="togglePageManager()" class="text-slate-400 hover:text-slate-600 font-bold text-xs">✕ Kapat</button>
             </div>
             <div id="pageManagerContent" class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-4 max-h-64 overflow-y-auto p-1"></div>
@@ -77,8 +77,8 @@
             <div class="rounded-3xl bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-700 p-8 sm:p-12 text-white shadow-2xl relative overflow-hidden">
                 <div class="relative z-10 max-w-xl">
                     <span class="px-3 py-1 rounded-full bg-white/20 text-xs font-bold uppercase tracking-wider mb-4 inline-block">Alp Studios 346</span>
-                    <h2 class="text-3xl sm:text-4xl font-black mb-4">Dijital Kitap ve Dergiler <br>İnteraktif Sayfa Deneyimi</h2>
-                    <p class="text-blue-100 text-sm mb-6">Görsellerini ve hikayelerini yükle, gerçekçi sayfa çevirme efektleriyle interaktif AlpBook projeleri tasarla.</p>
+                    <h2 class="text-3xl sm:text-4xl font-black mb-4">Tam Görsel Dijital Kitaplar <br>İnteraktif Sayfa Çevirme</h2>
+                    <p class="text-blue-100 text-sm mb-6">Yüksek çözünürlüklü görsellerini yükle, tamamen görsel tabanlı profesyonel AlpBook projelerini hayata geçir.</p>
                     <button onclick="openNewProjectModal()" class="px-6 py-3 rounded-2xl bg-white text-blue-700 font-bold text-xs shadow-lg hover:bg-blue-50 transition">Yeni AlpBook Başlat</button>
                 </div>
             </div>
@@ -100,74 +100,69 @@
                 <div class="flex items-center gap-4">
                     <div>
                         <input type="text" id="bookTitleInput" oninput="autoSave()" class="font-black text-base bg-transparent border-b border-transparent hover:border-slate-300 focus:border-blue-500 focus:outline-none px-1">
-                        <p class="text-[10px] text-slate-400 px-1">Yazar: <span id="bookAuthorDisplay">Alp Studios 346</span></p>
+                        <p class="text-[10px] text-slate-400 px-1">Yayıncı: <span id="bookAuthorDisplay">Alp Studios 346</span></p>
                     </div>
                 </div>
                 <div class="flex items-center gap-2">
-                    <button onclick="prevPage()" class="px-4 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 font-bold text-xs transition">◀ Önceki Sayfa</button>
+                    <button onclick="prevPage()" class="px-4 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 font-bold text-xs transition">◀ Önceki Görsel</button>
                     <span id="pageIndicatorText" class="text-xs font-extrabold px-3 py-2 bg-blue-50 dark:bg-blue-950/40 text-blue-600 rounded-xl">1 / 1</span>
-                    <button onclick="nextPage()" class="px-4 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 font-bold text-xs transition">Sonraki Sayfa ▶</button>
+                    <button onclick="nextPage()" class="px-4 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 font-bold text-xs transition">Sonraki Görsel ▶</button>
                 </div>
             </div>
 
             <!-- Central Stage -->
             <div class="flex-grow flex flex-col lg:flex-row gap-6 items-stretch min-h-[550px]">
                 
-                <!-- Interactive Reader Viewer -->
+                <!-- Interactive Full-Image Reader Viewer -->
                 <div class="w-full lg:w-3/4 flex flex-col items-center justify-center p-6 rounded-3xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xl relative book-stage overflow-hidden">
                     
-                    <div id="bookSheetContainer" class="w-full max-w-3xl aspect-[4/3] bg-slate-50 dark:bg-slate-950 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-2xl flex flex-col md:flex-row overflow-hidden relative page-shadow">
+                    <div id="bookSheetContainer" class="w-full max-w-4xl aspect-[16/10] bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-2xl flex flex-col md:flex-row overflow-hidden relative page-shadow">
                         
-                        <!-- Left Page -->
-                        <div class="w-full md:w-1/2 h-full p-6 flex flex-col items-center justify-center border-r border-slate-200 dark:border-slate-800 relative bg-white dark:bg-slate-950 group">
-                            <div id="leftPageContent" class="w-full h-full flex flex-col items-center justify-center text-center cursor-pointer" onclick="document.getElementById('fileUploadInput').click()">
+                        <!-- Left Image Page -->
+                        <div class="w-full md:w-1/2 h-full flex flex-col items-center justify-center border-r border-slate-800 relative bg-slate-950 group overflow-hidden">
+                            <div id="leftPageContent" class="w-full h-full flex flex-col items-center justify-center text-center cursor-pointer p-6" onclick="document.getElementById('fileUploadInput').click()">
                                 <div class="space-y-2">
-                                    <span class="text-3xl">📖</span>
-                                    <p class="text-xs font-bold text-slate-600 dark:text-slate-300">Sol Sayfa Görseli</p>
-                                    <p class="text-[10px] text-slate-400">Yüklemek için tıklayın</p>
+                                    <span class="text-4xl">🖼️</span>
+                                    <p class="text-xs font-bold text-slate-300">Sol Sayfa Görseli</p>
+                                    <p class="text-[10px] text-slate-500">Yüklemek için tıklayın</p>
                                 </div>
                             </div>
-                            <img id="leftPageImg" class="hidden absolute inset-0 w-full h-full object-cover cursor-pointer" onclick="document.getElementById('fileUploadInput').click()">
+                            <img id="leftPageImg" class="hidden absolute inset-0 w-full h-full object-contain cursor-pointer bg-black/40" onclick="document.getElementById('fileUploadInput').click()">
                         </div>
 
-                        <!-- Right Page -->
-                        <div class="w-full md:w-1/2 h-full p-6 flex flex-col items-center justify-center relative bg-white dark:bg-slate-950 group">
-                            <div id="rightPageContent" class="w-full h-full flex flex-col items-center justify-center text-center cursor-pointer" onclick="document.getElementById('fileUploadInput').click()">
+                        <!-- Right Image Page -->
+                        <div class="w-full md:w-1/2 h-full flex flex-col items-center justify-center relative bg-slate-950 group overflow-hidden">
+                            <div id="rightPageContent" class="w-full h-full flex flex-col items-center justify-center text-center cursor-pointer p-6" onclick="document.getElementById('fileUploadInput').click()">
                                 <div class="space-y-2">
-                                    <span class="text-3xl">✨</span>
-                                    <p class="text-xs font-bold text-slate-600 dark:text-slate-300">Sağ Sayfa Görseli</p>
-                                    <p class="text-[10px] text-slate-400">İçerik eklemek için tıklayın</p>
+                                    <span class="text-4xl">✨</span>
+                                    <p class="text-xs font-bold text-slate-300">Sağ Sayfa Görseli</p>
+                                    <p class="text-[10px] text-slate-500">Görsel eklemek için tıklayın</p>
                                 </div>
                             </div>
-                            <img id="rightPageImg" class="hidden absolute inset-0 w-full h-full object-cover cursor-pointer" onclick="document.getElementById('fileUploadInput').click()">
+                            <img id="rightPageImg" class="hidden absolute inset-0 w-full h-full object-contain cursor-pointer bg-black/40" onclick="document.getElementById('fileUploadInput').click()">
                         </div>
 
                     </div>
 
                     <div class="absolute bottom-4 flex items-center gap-4 bg-slate-900/80 backdrop-blur-md px-4 py-2 rounded-2xl text-white text-xs">
-                        <span class="font-medium">AlpBook İnteraktif Mod Aktif</span>
+                        <span class="font-medium">AlpBook Tam Görsel Modu</span>
                     </div>
                 </div>
 
                 <!-- Right Sidebar Editor Tools -->
                 <div class="w-full lg:w-1/4 space-y-4">
                     <div class="p-6 rounded-3xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm space-y-4">
-                        <h3 class="font-bold text-xs text-slate-500 uppercase tracking-wider">Sayfa Düzenleyici</h3>
+                        <h3 class="font-bold text-xs text-slate-500 uppercase tracking-wider">Görsel Sayfa Kontrolleri</h3>
                         
                         <div>
-                            <label class="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1">Sayfa Resmi</label>
-                            <label class="w-full py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold flex items-center justify-center gap-2 cursor-pointer shadow-md transition">
-                                📷 Resim Yükle / Değiştir
+                            <label class="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1">Sayfa Görseli (Yüksek Çözünürlük)</label>
+                            <label class="w-full py-3.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold flex items-center justify-center gap-2 cursor-pointer shadow-md transition">
+                                📁 Görsel Dosyası Yükle
                                 <input type="file" id="fileUploadInput" accept="image/*" class="hidden" onchange="handleImageUpload(event)">
                             </label>
                         </div>
 
-                        <div>
-                            <label class="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1">Sayfa Notu / Açıklaması</label>
-                            <textarea id="pageTextInput" rows="4" oninput="updatePageText(this.value)" placeholder="Bu sayfaya ait metni yazın..." class="w-full p-3 text-xs rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"></textarea>
-                        </div>
-
-                        <button onclick="deleteCurrentPage()" class="w-full py-2.5 rounded-xl border border-red-200 text-red-500 hover:bg-red-50 dark:hover:bg-red-950/30 font-bold text-xs transition">Bu Sayfayı Sil</button>
+                        <button onclick="deleteCurrentPage()" class="w-full py-2.5 rounded-xl border border-red-200 text-red-500 hover:bg-red-50 dark:hover:bg-red-950/30 font-bold text-xs transition">Bu Sayfayı Kaldır</button>
                     </div>
 
                     <!-- AI Assistant Panel -->
@@ -175,12 +170,12 @@
                         <div class="flex items-center gap-2">
                             <div class="w-7 h-7 rounded-lg bg-purple-600 text-white font-bold flex items-center justify-center text-[10px]">AI</div>
                             <div>
-                                <h3 class="font-bold text-xs">AlpAI Görsel Üretici</h3>
-                                <p class="text-[10px] text-slate-500">Otomatik Sayfa Tasarımı</p>
+                                <h3 class="font-bold text-xs">AlpAI Görsel Oluşturucu</h3>
+                                <p class="text-[10px] text-slate-500">Otomatik Sayfa Grafiği</p>
                             </div>
                         </div>
-                        <input type="text" id="aiPrompt" placeholder="Örn: Geleceğin teknoloji şehri..." class="w-full p-2.5 text-xs rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 focus:outline-none focus:ring-2 focus:ring-purple-500">
-                        <button onclick="generateAiPageImage()" id="aiBtn" class="w-full py-2.5 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-semibold text-xs transition">AI İle Sayfa Tasarla</button>
+                        <input type="text" id="aiPrompt" placeholder="Örn: Fantastik kitap kapağı..." class="w-full p-2.5 text-xs rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 focus:outline-none focus:ring-2 focus:ring-purple-500">
+                        <button onclick="generateAiPageImage()" id="aiBtn" class="w-full py-2.5 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-semibold text-xs transition">AI İle Sayfa Görseli Üret</button>
                     </div>
                 </div>
 
@@ -193,11 +188,11 @@
         <div class="bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl border border-slate-200 dark:border-slate-800 space-y-4">
             <h3 class="text-lg font-black">Yeni AlpBook Projesi</h3>
             <div>
-                <label class="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1">Kitap Adı</label>
+                <label class="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1">Kitap / Dergi Adı</label>
                 <input type="text" id="modalTitle" class="w-full px-3.5 py-2.5 text-sm rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950">
             </div>
             <div>
-                <label class="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1">Yazar / Şirket</label>
+                <label class="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1">Yayıncı / Şirket</label>
                 <input type="text" id="modalAuthor" value="Alp Studios 346" class="w-full px-3.5 py-2.5 text-sm rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950">
             </div>
             <div class="flex gap-2 pt-2">
@@ -252,7 +247,7 @@
     <script>
         const DEFAULT_AUTHOR = 'Alp Studios 346';
         let appState = {
-            projects: JSON.parse(localStorage.getItem('alp_books') || '[]'),
+            projects: JSON.parse(localStorage.getItem('alp_books_v2') || '[]'),
             currentId: null,
             currentPageIndex: 0,
             darkMode: localStorage.getItem('alp_book_dark') === 'true'
@@ -322,7 +317,7 @@
             count.textContent = `${appState.projects.length} Kitap`;
 
             if (appState.projects.length === 0) {
-                grid.innerHTML = `<div class="col-span-full text-center py-12 text-slate-400 text-xs">Henüz kayıtlı AlpBook yok. Yeni bir tane oluşturun!</div>`;
+                grid.innerHTML = `<div class="col-span-full text-center py-12 text-slate-400 text-xs">Henüz kayıtlı görsel AlpBook yok. Yeni bir tane oluşturun!</div>`;
                 return;
             }
 
@@ -331,18 +326,18 @@
                 card.className = "bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-sm hover:shadow-xl transition flex flex-col justify-between cursor-pointer";
                 card.onclick = () => openProject(p.id);
 
-                let firstImg = p.pages && p.pages[0] ? p.pages[0].image : '';
+                let firstImg = p.pages && p.pages[0] ? p.pages[0] : '';
 
                 card.innerHTML = `
                     <div>
                         <h4 class="font-bold text-base mb-1">${escapeHtml(p.title)}</h4>
-                        <p class="text-xs text-slate-500 mb-4">Yazar: ${escapeHtml(p.author)}</p>
-                        <div class="h-28 bg-slate-100 dark:bg-slate-950 rounded-2xl flex items-center justify-center overflow-hidden border border-slate-200 dark:border-slate-800 mb-3">
-                            ${firstImg ? `<img src="${firstImg}" class="h-full w-full object-cover">` : '<span class="text-xs text-slate-400">Kapak Yok</span>'}
+                        <p class="text-xs text-slate-500 mb-4">Yayıncı: ${escapeHtml(p.author)}</p>
+                        <div class="h-32 bg-slate-900 rounded-2xl flex items-center justify-center overflow-hidden border border-slate-800 mb-3">
+                            ${firstImg ? `<img src="${firstImg}" class="h-full w-full object-contain">` : '<span class="text-xs text-slate-500">Görsel Yok</span>'}
                         </div>
                     </div>
                     <div class="flex justify-between items-center pt-2 border-t border-slate-100 dark:border-slate-800 text-[10px] text-slate-400">
-                        <span>${p.pages.length} Sayfa</span>
+                        <span>${p.pages.length} Sayfa Görseli</span>
                         <button onclick="deleteProject(event, '${p.id}')" class="text-red-500 font-bold">Sil</button>
                     </div>
                 `;
@@ -363,17 +358,14 @@
         }
 
         function createNewProject() {
-            const title = document.getElementById('modalTitle').value.trim() || 'Yeni AlpBook';
+            const title = document.getElementById('modalTitle').value.trim() || 'Yeni Görsel AlpBook';
             const author = document.getElementById('modalAuthor').value.trim() || DEFAULT_AUTHOR;
 
             const newProj = {
                 id: 'book_' + Date.now(),
                 title: title,
                 author: author,
-                pages: [
-                    { image: '', text: 'Kapak Sayfası' },
-                    { image: '', text: 'İkinci Sayfa' }
-                ],
+                pages: ['', ''], // Full image entries
                 updatedAt: Date.now()
             };
 
@@ -381,7 +373,7 @@
             saveStorage();
             closeNewProjectModal();
             openProject(newProj.id);
-            showToast('AlpBook projesi oluşturuldu!');
+            showToast('Görsel AlpBook projesi başlatıldı!');
         }
 
         function openProject(id) {
@@ -405,12 +397,12 @@
             const idx = appState.currentPageIndex;
             document.getElementById('pageIndicatorText').textContent = `${idx + 1} / ${p.pages.length}`;
 
-            const leftData = p.pages[idx] || { image: '', text: '' };
+            const leftImgSrc = p.pages[idx] || '';
             const leftImgEl = document.getElementById('leftPageImg');
             const leftContentEl = document.getElementById('leftPageContent');
 
-            if(leftData.image) {
-                leftImgEl.src = leftData.image;
+            if(leftImgSrc) {
+                leftImgEl.src = leftImgSrc;
                 leftImgEl.classList.remove('hidden');
                 leftContentEl.classList.add('hidden');
             } else {
@@ -420,12 +412,12 @@
             }
 
             const rightIdx = idx + 1 < p.pages.length ? idx + 1 : idx;
-            const rightData = p.pages[rightIdx] || { image: '', text: '' };
+            const rightImgSrc = p.pages[rightIdx] || '';
             const rightImgEl = document.getElementById('rightPageImg');
             const rightContentEl = document.getElementById('rightPageContent');
 
-            if(rightData.image) {
-                rightImgEl.src = rightData.image;
+            if(rightImgSrc) {
+                rightImgEl.src = rightImgSrc;
                 rightImgEl.classList.remove('hidden');
                 rightContentEl.classList.add('hidden');
             } else {
@@ -433,8 +425,6 @@
                 rightImgEl.classList.add('hidden');
                 rightContentEl.classList.remove('hidden');
             }
-
-            document.getElementById('pageTextInput').value = leftData.text || '';
         }
 
         function nextPage() {
@@ -461,11 +451,11 @@
                 const reader = new FileReader();
                 reader.onload = function(evt) {
                     const p = getCurrentProject();
-                    if(p && p.pages[appState.currentPageIndex]) {
-                        p.pages[appState.currentPageIndex].image = evt.target.result;
+                    if(p) {
+                        p.pages[appState.currentPageIndex] = evt.target.result;
                         autoSave();
                         loadSpreadToViewer();
-                        showToast('Sayfa görseli güncellendi!');
+                        showToast('Sayfa görseli yüklendi!');
                     }
                 };
                 reader.readAsDataURL(file);
@@ -473,29 +463,21 @@
             e.target.value = '';
         }
 
-        function updatePageText(val) {
-            const p = getCurrentProject();
-            if(p && p.pages[appState.currentPageIndex]) {
-                p.pages[appState.currentPageIndex].text = val;
-                autoSave();
-            }
-        }
-
         function addNewPage() {
             const p = getCurrentProject();
             if(!p) return;
-            p.pages.push({ image: '', text: `Sayfa ${p.pages.length + 1}` });
+            p.pages.push('');
             appState.currentPageIndex = p.pages.length - 1;
             autoSave();
             loadSpreadToViewer();
-            showToast('Yeni sayfa eklendi.');
+            showToast('Yeni görsel sayfası eklendi.');
         }
 
         function deleteCurrentPage() {
             const p = getCurrentProject();
             if(!p) return;
             if(p.pages.length <= 1) {
-                showToast('Kitapta en az bir sayfa kalmalıdır.');
+                showToast('En az bir sayfa görseli kalmalıdır.');
                 return;
             }
             p.pages.splice(appState.currentPageIndex, 1);
@@ -504,7 +486,7 @@
             }
             autoSave();
             loadSpreadToViewer();
-            showToast('Sayfa silindi.');
+            showToast('Sayfa görseli kaldırıldı.');
         }
 
         function renderPageManagerDrawerList() {
@@ -513,7 +495,7 @@
             if(!p || !container) return;
 
             container.innerHTML = '';
-            p.pages.forEach((pg, idx) => {
+            p.pages.forEach((imgSrc, idx) => {
                 const card = document.createElement('div');
                 const isActive = idx === appState.currentPageIndex;
                 card.className = `p-3 rounded-xl border cursor-pointer flex flex-col items-center justify-between transition ${isActive ? 'border-blue-500 bg-blue-50/50 dark:bg-blue-950/20' : 'border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950'}`;
@@ -521,8 +503,8 @@
 
                 card.innerHTML = `
                     <span class="text-[10px] font-bold mb-1 ${isActive ? 'text-blue-600' : 'text-slate-500'}">S. ${idx + 1}</span>
-                    <div class="w-full h-12 bg-slate-200 dark:bg-slate-900 rounded-lg flex items-center justify-center overflow-hidden">
-                        ${pg.image ? `<img src="${pg.image}" class="h-full w-full object-cover">` : '<span class="text-[9px] text-slate-400">Boş</span>'}
+                    <div class="w-full h-12 bg-slate-900 rounded-lg flex items-center justify-center overflow-hidden">
+                        ${imgSrc ? `<img src="${imgSrc}" class="h-full w-full object-contain">` : '<span class="text-[9px] text-slate-500">Boş</span>'}
                     </div>
                 `;
                 container.appendChild(card);
@@ -540,7 +522,7 @@
 
         function deleteProject(e, id) {
             e.stopPropagation();
-            if(confirm('Bu AlpBook projesini silmek istediğinize emin misiniz?')) {
+            if(confirm('Bu görsel AlpBook projesini silmek istediğinize emin misiniz?')) {
                 appState.projects = appState.projects.filter(x => x.id !== id);
                 saveStorage();
                 renderProjectsList();
@@ -549,32 +531,32 @@
         }
 
         function saveStorage() {
-            localStorage.setItem('alp_books', JSON.stringify(appState.projects));
+            localStorage.setItem('alp_books_v2', JSON.stringify(appState.projects));
         }
 
         function generateAiPageImage() {
             const prompt = document.getElementById('aiPrompt').value.trim();
-            if(!prompt) { showToast('Lütfen AI için bir konu yazın.'); return; }
+            if(!prompt) { showToast('Lütfen AI görsel konusu yazın.'); return; }
 
             const btn = document.getElementById('aiBtn');
-            btn.textContent = 'AI Tasarlıyor...';
+            btn.textContent = 'AI Çiziyor...';
             btn.disabled = true;
 
             setTimeout(() => {
-                const randomImg = 'https://picsum.photos/800/600?random=' + Date.now();
+                const randomImg = 'https://picsum.photos/1200/800?random=' + Date.now();
                 const p = getCurrentProject();
-                if(p && p.pages[appState.currentPageIndex]) {
-                    p.pages[appState.currentPageIndex].image = randomImg;
+                if(p) {
+                    p.pages[appState.currentPageIndex] = randomImg;
                     autoSave();
                     loadSpreadToViewer();
                 }
-                btn.textContent = 'AI İle Sayfa Tasarla';
+                btn.textContent = 'AI İle Sayfa Görseli Üret';
                 btn.disabled = false;
-                showToast('AlpAI sayfayı başarıyla çizdi!');
+                showToast('AI görseli sayfaya yerleştirildi!');
             }, 1000);
         }
 
-        // TinyURL API POST Request Implementation
+        // TinyURL API POST Request
         async function generateTinyUrlApiRequest() {
             document.getElementById('shareMainState').classList.add('hidden');
             document.getElementById('shareLoadingState').classList.remove('hidden');
@@ -647,14 +629,14 @@
         }
 
         async function exportAsPdf() {
-            showToast('PDF hazırlanıyor...');
+            showToast('PDF derleniyor...');
             const el = document.getElementById('bookSheetContainer');
-            await html2pdf().from(el).save('alpbook.pdf');
+            await html2pdf().from(el).save('alpbook-gorsel.pdf');
             closeShareModal();
         }
 
         async function exportAsImage() {
-            showToast('Kapak resmi indiriliyor...');
+            showToast('Kapak görseli indiriliyor...');
             const el = document.getElementById('bookSheetContainer');
             const canvas = await html2canvas(el, { scale: 2 });
             const link = document.createElement('a');
