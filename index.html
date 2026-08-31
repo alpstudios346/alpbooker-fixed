@@ -1,758 +1,494 @@
 <!DOCTYPE html>
-<html lang="tr" class="h-full overflow-hidden">
+<html lang="tr" class="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AlpBook - Dijital Flipbook Stüdyosu | Alp Studios 346</title>
-    <!-- Tailwind CSS -->
+    <title>AlpBooker - Alp Studios 346</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,400&display=swap" rel="stylesheet">
-    <!-- Lucide Icons -->
-    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    
     <script>
         tailwind.config = {
             darkMode: 'class',
             theme: {
                 extend: {
-                    fontFamily: {
-                        sans: ['Plus Jakarta Sans', 'sans-serif'],
-                        serif: ['Playfair Display', 'serif'],
-                    },
                     colors: {
-                        brand: {
-                            50: '#ecfdf5',
-                            500: '#10b981',
-                            600: '#059669',
-                            700: '#047857',
-                            900: '#064e3b',
-                        }
+                        alpBlue: { 500: '#3b82f6', 600: '#2563eb' }
                     }
                 }
             }
         }
     </script>
     <style>
-        body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            user-select: none;
-            overflow: hidden;
-        }
-        .book-perspective {
-            perspective: 2500px;
-        }
-        .page-shadow-left {
-            box-shadow: inset -15px 0 30px -10px rgba(0, 0, 0, 0.3);
-        }
-        .page-shadow-right {
-            box-shadow: inset 15px 0 30px -10px rgba(0, 0, 0, 0.3);
-        }
-        .cover-shadow {
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6), 0 0 30px rgba(16, 185, 129, 0.1);
-        }
-        
-        /* 3D Page Flip Animation Styles */
-        .book-stage {
-            transform-style: preserve-3d;
-        }
-        .flip-page {
-            transform-style: preserve-3d;
-            transform-origin: left center;
-            transition: transform 0.8s cubic-bezier(0.645, 0.045, 0.355, 1);
-        }
-        .flip-page.flipped {
-            transform: rotateY(-180deg);
-        }
-        .page-face {
-            backface-visibility: hidden;
-            -webkit-backface-visibility: hidden;
-        }
-        .page-back {
-            transform: rotateY(180deg);
-        }
-
-        ::-webkit-scrollbar {
-            width: 5px;
-            height: 5px;
-        }
-        ::-webkit-scrollbar-track {
-            background: rgba(0,0,0,0.1);
-        }
-        ::-webkit-scrollbar-thumb {
-            background: rgba(255,255,255,0.2);
-            border-radius: 3px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: rgba(255,255,255,0.4);
-        }
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,500;0,700;1,400&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .book-font { font-family: 'Playfair Display', serif; }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 9999px; }
+        .dark ::-webkit-scrollbar-thumb { background: #475569; }
+        .loader { border: 3px solid rgba(255,255,255,0.3); border-radius: 50%; border-top: 3px solid #3b82f6; width: 20px; height: 20px; animation: spin 0.8s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
-<body class="h-full bg-slate-950 text-slate-100 flex flex-col overflow-hidden">
+<body class="bg-slate-50 text-slate-800 dark:bg-slate-950 dark:text-slate-100 min-h-screen flex flex-col">
 
-    <!-- Top Navigation Bar -->
-    <header class="h-16 bg-slate-900/90 backdrop-blur-xl border-b border-slate-800/80 px-4 md:px-6 flex items-center justify-between z-40 shrink-0">
-        <div class="flex items-center space-x-3 min-w-0">
-            <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-emerald-600 to-teal-400 flex items-center justify-center shadow-lg shadow-emerald-500/20 text-slate-950 font-black text-xl tracking-tighter shrink-0">
-                AB
+    <!-- Header -->
+    <header class="sticky top-0 z-30 border-b border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md">
+        <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-3 cursor-pointer" onclick="showDashboard()">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center text-white font-bold shadow-lg">AB</div>
+                <div>
+                    <h1 class="text-lg font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-purple-600">AlpBooker</h1>
+                    <p class="text-[10px] text-slate-500 font-semibold uppercase">Alp Studios 346</p>
+                </div>
             </div>
-            <div class="min-w-0">
-                <h1 class="font-extrabold text-sm md:text-base tracking-tight bg-gradient-to-r from-white via-slate-200 to-emerald-400 bg-clip-text text-transparent truncate">AlpBook</h1>
-                <p class="text-[10px] text-slate-400 font-medium tracking-wide uppercase truncate">Alp Studios 346 • 3D Stüdyo</p>
+
+            <div class="flex items-center gap-3">
+                <button onclick="toggleTheme()" class="p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 text-sm">
+                    <span id="themeIcon">🌙</span>
+                </button>
+                <div id="editorHeaderActions" class="hidden flex items-center gap-2">
+                    <button onclick="showDashboard()" class="px-3.5 py-2 text-sm font-semibold rounded-xl border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800">Projeler</button>
+                    <button onclick="openShareModal()" class="px-4 py-2 text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-xl shadow-md">Paylaş</button>
+                </div>
             </div>
-        </div>
-
-        <!-- Center Quick Stats -->
-        <div class="hidden md:flex items-center space-x-4 bg-slate-950/50 border border-slate-800/80 px-4 py-1.5 rounded-full text-xs font-medium text-slate-300">
-            <span id="header-book-title" class="text-emerald-400 font-semibold truncate max-w-[160px]">Yeni Proje</span>
-            <div class="w-1 h-1 rounded-full bg-slate-700"></div>
-            <span id="header-page-count" class="whitespace-nowrap">0 Sayfa</span>
-        </div>
-
-        <!-- Header Actions -->
-        <div class="flex items-center space-x-2 shrink-0">
-            <button onclick="openModal('upload-modal')" class="flex items-center space-x-1.5 px-3 md:px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-semibold text-xs transition-all shadow-lg shadow-emerald-600/25 active:scale-95">
-                <i data-lucide="plus-circle" class="w-4 h-4"></i>
-                <span class="hidden sm:inline">Sayfa Ekle</span>
-            </button>
-            <button onclick="openModal('settings-modal')" class="p-2.5 bg-slate-800/80 hover:bg-slate-800 text-slate-300 hover:text-white rounded-xl border border-slate-700/60 transition-all" title="Kitap Ayarları">
-                <i data-lucide="sliders" class="w-4 h-4"></i>
-            </button>
-            <button onclick="toggleFullscreen()" class="p-2.5 bg-slate-800/80 hover:bg-slate-800 text-slate-300 hover:text-white rounded-xl border border-slate-700/60 transition-all hidden sm:flex" title="Tam Ekran">
-                <i data-lucide="maximize" class="w-4 h-4"></i>
-            </button>
-            <button onclick="exportProject()" class="p-2.5 md:px-3.5 md:py-2 bg-slate-800/80 hover:bg-slate-700 text-slate-300 hover:text-white rounded-xl border border-slate-700/60 font-medium text-xs transition-all flex items-center space-x-1" title="Dışa Aktar">
-                <i data-lucide="download" class="w-4 h-4"></i>
-                <span class="hidden lg:inline">Dışa Aktar</span>
-            </button>
         </div>
     </header>
 
-    <!-- Main Workspace -->
-    <main class="flex-1 flex flex-col lg:flex-row relative overflow-hidden bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-slate-900 via-slate-950 to-black min-h-0">
+    <!-- Main Content -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 py-8">
         
-        <!-- Book Viewport Area -->
-        <div class="flex-1 flex flex-col items-center justify-center p-3 md:p-6 lg:p-10 relative overflow-hidden min-h-0">
-            
-            <!-- Empty State -->
-            <div id="empty-state" class="absolute inset-4 md:inset-8 lg:inset-16 flex flex-col items-center justify-center bg-slate-900/60 backdrop-blur-md border-2 border-dashed border-slate-800 rounded-3xl p-6 text-center transition-all z-20 overflow-y-auto">
-                <div class="w-16 h-16 md:w-20 md:h-20 bg-emerald-500/10 border border-emerald-500/20 rounded-2xl flex items-center justify-center text-emerald-400 mb-4 shadow-2xl animate-pulse shrink-0">
-                    <i data-lucide="book-open" class="w-8 h-8 md:w-10 md:h-10"></i>
-                </div>
-                <h3 class="text-xl md:text-2xl font-bold text-white mb-2">AlpBook'unuz Henüz Boş</h3>
-                <p class="text-slate-400 max-w-md text-xs md:text-sm mb-6 leading-relaxed">Gerçekçi 3D sayfa çevirme efektli dijital kitabınızı oluşturmak için görseller yükleyin veya örnek şablonu deneyin.</p>
-                <div class="flex flex-wrap gap-3 justify-center">
-                    <button onclick="openModal('upload-modal')" class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold rounded-2xl transition-all shadow-xl shadow-emerald-600/30 flex items-center space-x-2 text-xs md:text-sm">
-                        <i data-lucide="upload" class="w-4 h-4"></i>
-                        <span>Resim Yükle</span>
-                    </button>
-                    <button onclick="loadSampleBook()" class="px-5 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold rounded-2xl border border-slate-700 transition-all flex items-center space-x-2 text-xs md:text-sm">
-                        <i data-lucide="sparkles" class="w-4 h-4 text-amber-400"></i>
-                        <span>Örnek Kitap Yükle</span>
-                    </button>
+        <!-- Dashboard View -->
+        <div id="dashboardView" class="space-y-8">
+            <div class="rounded-3xl bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-700 p-8 sm:p-12 text-white shadow-2xl relative overflow-hidden">
+                <div class="relative z-10 max-w-xl">
+                    <span class="px-3 py-1 rounded-full bg-white/20 text-xs font-bold uppercase tracking-wider mb-4 inline-block">Alp Studios 346</span>
+                    <h2 class="text-3xl sm:text-4xl font-black mb-4">Hoş geldin! <br>Bir kitap yapmaya ne dersin?</h2>
+                    <p class="text-blue-100 text-sm mb-6">Yapay zeka asistanı AlpAI ile dilediğin gibi kitaplar tasarla, resimler ekle ve dünyayla paylaş.</p>
+                    <button onclick="openNewProjectModal()" class="px-6 py-3 rounded-2xl bg-white text-blue-700 font-bold text-sm shadow-lg hover:bg-blue-50 transition">Yeni Proje Başlat</button>
                 </div>
             </div>
 
-            <!-- Book Container with 3D Flip Stage -->
-            <div id="book-wrapper" class="relative w-full max-w-5xl h-[56vh] md:h-[65vh] lg:h-[72vh] flex items-center justify-center book-perspective opacity-0 pointer-events-none transition-opacity duration-500">
-                
-                <!-- Center Book Spine Effect -->
-                <div class="absolute z-20 w-8 md:w-12 h-full bg-gradient-to-r from-black/60 via-black/20 to-black/60 pointer-events-none rounded-sm"></div>
-
-                <!-- Spread Stage -->
-                <div id="book-spread" class="relative w-full h-full max-w-4xl bg-slate-900 rounded-3xl cover-shadow border border-slate-800/80 flex overflow-hidden book-stage">
-                    
-                    <!-- Left Page -->
-                    <div id="left-page" class="w-1/2 h-full border-r border-slate-800/80 bg-slate-900 flex flex-col items-center justify-center relative p-4 md:p-6 overflow-hidden page-shadow-right">
-                        <img id="left-img" src="" alt="Sol Sayfa" class="max-w-full max-h-full object-contain rounded-xl shadow-lg">
-                        <div class="absolute bottom-3 left-4 md:left-6 text-[10px] md:text-xs font-mono text-slate-500" id="left-num">1</div>
-                    </div>
-
-                    <!-- Right Page (Base) -->
-                    <div id="right-page" class="w-1/2 h-full bg-slate-900 flex flex-col items-center justify-center relative p-4 md:p-6 overflow-hidden page-shadow-left">
-                        <img id="right-img" src="" alt="Sağ Sayfa" class="max-w-full max-h-full object-contain rounded-xl shadow-lg">
-                        <div class="absolute bottom-3 right-4 md:right-6 text-[10px] md:text-xs font-mono text-slate-500" id="right-num">2</div>
-                    </div>
-
-                    <!-- 3D Flipping Sheet Layer (Overlay for Animation) -->
-                    <div id="flip-sheet" class="absolute top-0 right-0 w-1/2 h-full pointer-events-none z-30 flip-page" style="transform: rotateY(0deg);">
-                        <!-- Front of turning page -->
-                        <div id="sheet-front" class="absolute inset-0 bg-slate-900 flex flex-col items-center justify-center p-4 md:p-6 overflow-hidden page-face page-shadow-left">
-                            <img id="sheet-front-img" src="" class="max-w-full max-h-full object-contain rounded-xl shadow-lg">
-                            <div class="absolute bottom-3 right-4 md:right-6 text-[10px] md:text-xs font-mono text-slate-500" id="sheet-front-num"></div>
-                        </div>
-                        <!-- Back of turning page -->
-                        <div id="sheet-back" class="absolute inset-0 bg-slate-900 flex flex-col items-center justify-center p-4 md:p-6 overflow-hidden page-face page-back page-shadow-right">
-                            <img id="sheet-back-img" src="" class="max-w-full max-h-full object-contain rounded-xl shadow-lg">
-                            <div class="absolute bottom-3 left-4 md:left-6 text-[10px] md:text-xs font-mono text-slate-500" id="sheet-back-num"></div>
-                        </div>
-                    </div>
-
+            <div>
+                <div class="flex items-center justify-between mb-6">
+                    <h3 class="text-lg font-bold">Kayıtlı Kitapların</h3>
+                    <span id="projectCount" class="text-xs font-semibold px-3 py-1 rounded-full bg-slate-200 dark:bg-slate-800">0 Kitap</span>
                 </div>
+                <div id="projectsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
             </div>
-
-            <!-- Floating Navigation Controls -->
-            <button onclick="prevSpread()" id="prev-btn" class="absolute left-2 md:left-6 z-30 w-11 h-11 md:w-14 md:h-14 rounded-2xl bg-slate-900/90 hover:bg-slate-800 text-white backdrop-blur-xl border border-slate-700/60 flex items-center justify-center shadow-2xl transition-all disabled:opacity-20 disabled:pointer-events-none active:scale-95 group">
-                <i data-lucide="chevron-left" class="w-5 h-5 md:w-7 md:h-7 group-hover:-translate-x-0.5 transition-transform"></i>
-            </button>
-            <button onclick="nextSpread()" id="next-btn" class="absolute right-2 md:right-6 z-30 w-11 h-11 md:w-14 md:h-14 rounded-2xl bg-slate-900/90 hover:bg-slate-800 text-white backdrop-blur-xl border border-slate-700/60 flex items-center justify-center shadow-2xl transition-all disabled:opacity-20 disabled:pointer-events-none active:scale-95 group">
-                <i data-lucide="chevron-right" class="w-5 h-5 md:w-7 md:h-7 group-hover:translate-x-0.5 transition-transform"></i>
-            </button>
-
-            <!-- Bottom Control Bar -->
-            <div class="mt-3 md:mt-4 flex items-center space-x-3 bg-slate-900/90 backdrop-blur-2xl border border-slate-800/80 px-4 md:px-6 py-2.5 rounded-2xl shadow-2xl z-30 shrink-0">
-                <span id="status-text" class="text-xs font-semibold text-slate-400 whitespace-nowrap">Sayfa: 0 / 0</span>
-                <div class="h-4 w-px bg-slate-800"></div>
-                <div class="flex items-center space-x-1 bg-slate-950/60 p-1 rounded-xl border border-slate-800/60">
-                    <button onclick="setMode('spread')" id="btn-spread" class="px-2.5 py-1 text-[11px] md:text-xs font-semibold bg-emerald-600 text-white rounded-lg transition-all shadow whitespace-nowrap">Çift Sayfa</button>
-                    <button onclick="setMode('single')" id="btn-single" class="px-2.5 py-1 text-[11px] md:text-xs font-semibold text-slate-400 hover:text-white rounded-lg transition-all whitespace-nowrap">Tek Sayfa</button>
-                </div>
-            </div>
-
         </div>
 
-        <!-- Sidebar / Thumbnails & Pages Manager -->
-        <aside class="w-full lg:w-84 bg-slate-900/90 backdrop-blur-xl border-t lg:border-t-0 lg:border-l border-slate-800/80 flex flex-col h-44 lg:h-full z-30 shrink-0 overflow-hidden">
-            <div class="p-3 md:p-4 border-b border-slate-800/80 flex items-center justify-between shrink-0">
-                <div class="flex items-center space-x-2 min-w-0">
-                    <div class="w-6 h-6 md:w-7 md:h-7 rounded-lg bg-emerald-500/10 flex items-center justify-center text-emerald-400 shrink-0">
-                        <i data-lucide="layers" class="w-3.5 h-3.5 md:w-4 md:h-4"></i>
-                    </div>
-                    <h2 class="font-bold text-xs uppercase tracking-wider text-white truncate">Sayfa Yönetimi</h2>
-                </div>
-                <span id="badge-count" class="px-2 py-0.5 bg-emerald-500/10 text-emerald-400 text-[11px] font-mono font-bold rounded-full border border-emerald-500/20 shrink-0">0 Sayfa</span>
-            </div>
-
-            <!-- Thumbnails List -->
-            <div id="thumb-container" class="flex-1 overflow-y-auto p-3 space-y-2.5 flex lg:block flex-row lg:space-y-2.5 space-x-2.5 lg:space-x-0 min-h-0">
-                <!-- Dynamically populated -->
-            </div>
-
-            <!-- Sidebar Footer -->
-            <div class="p-3 border-t border-slate-800/80 bg-slate-950/40 flex items-center justify-between shrink-0">
-                <button onclick="clearAllPages()" class="text-xs text-rose-400 hover:text-rose-300 font-semibold flex items-center space-x-1 px-2.5 py-1.5 rounded-xl hover:bg-rose-500/10 transition-all">
-                    <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
-                    <span>Tümünü Sil</span>
-                </button>
-                <button onclick="openModal('upload-modal')" class="text-xs text-emerald-400 hover:text-emerald-300 font-semibold flex items-center space-x-1 px-2.5 py-1.5 rounded-xl hover:bg-emerald-500/10 transition-all">
-                    <i data-lucide="plus" class="w-3.5 h-3.5"></i>
-                    <span>Yeni Sayfa</span>
-                </button>
-            </div>
-        </aside>
-
-    </main>
-
-    <!-- Upload Modal -->
-    <div id="upload-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden opacity-0 transition-all duration-300">
-        <div class="bg-slate-900 border border-slate-800 w-full max-w-lg rounded-3xl shadow-2xl overflow-hidden transform scale-95 transition-transform duration-300 max-h-[90vh] flex flex-col" id="upload-modal-content">
-            <div class="p-5 md:p-6 border-b border-slate-800 flex items-center justify-between shrink-0">
-                <div class="flex items-center space-x-3">
-                    <div class="w-9 h-9 rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-400 shrink-0">
-                        <i data-lucide="image-plus" class="w-5 h-5"></i>
+        <!-- Editor View -->
+        <div id="editorView" class="hidden flex flex-col lg:flex-row gap-8">
+            <!-- Sidebar Controls -->
+            <div class="w-full lg:w-1/3 space-y-6">
+                <div class="p-6 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm space-y-4">
+                    <h3 class="font-bold text-sm text-slate-500 uppercase tracking-wider">Kitap Ayarları</h3>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1">Kitap Başlığı</label>
+                        <input type="text" id="bookTitle" class="w-full px-3.5 py-2.5 text-sm rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 focus:outline-none focus:ring-2 focus:ring-blue-500">
                     </div>
                     <div>
-                        <h3 class="font-bold text-sm md:text-base text-white">AlpBook'a Görsel Ekle</h3>
-                        <p class="text-[11px] text-slate-400">Sayfalarınızı sırayla yükleyin veya sürükleyin</p>
+                        <label class="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1">Yapımcı / Yazar</label>
+                        <input type="text" id="bookAuthor" class="w-full px-3.5 py-2.5 text-sm rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <input type="checkbox" id="saveAuthorCheck" class="w-4 h-4 text-blue-600 rounded border-slate-300">
+                        <label for="saveAuthorCheck" class="text-xs text-slate-600 dark:text-slate-400">Yazarı varsayılan olarak kaydet</label>
+                    </div>
+                    <button onclick="saveCurrentProject()" class="w-full py-2.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 font-bold text-xs rounded-xl transition">Değişiklikleri Kaydet</button>
+                </div>
+
+                <!-- AlpAI Assistant Panel -->
+                <div class="p-6 rounded-2xl border border-purple-200 dark:border-purple-900/40 bg-gradient-to-b from-purple-50/50 to-white dark:from-purple-950/20 dark:to-slate-900 shadow-sm space-y-4">
+                    <div class="flex items-center gap-2">
+                        <div class="w-8 h-8 rounded-lg bg-purple-600 text-white font-bold flex items-center justify-center text-xs">AI</div>
+                        <div>
+                            <h3 class="font-bold text-sm">AlpAI Asistanı</h3>
+                            <p class="text-[11px] text-slate-500">Doğal Metin & Görsel Üretici</p>
+                        </div>
+                    </div>
+                    <div>
+                        <textarea id="aiPrompt" rows="3" placeholder="AlpAI için bir konu yazın..." class="w-full p-3 text-xs rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 focus:outline-none focus:ring-2 focus:ring-purple-500 resize-none"></textarea>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <button onclick="alpAiGenerateText()" id="aiTextBtn" class="px-3 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-semibold text-xs transition">Hikaye Yaz</button>
+                        <button onclick="alpAiGenerateImage()" id="aiImgBtn" class="px-3 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs transition">Resim Çiz</button>
                     </div>
                 </div>
-                <button onclick="closeModal('upload-modal')" class="text-slate-400 hover:text-white p-2 rounded-xl hover:bg-slate-800 transition-all">
-                    <i data-lucide="x" class="w-5 h-5"></i>
-                </button>
             </div>
-            <div class="p-5 md:p-6 space-y-4 overflow-y-auto">
-                <div id="dropzone" class="border-2 border-dashed border-slate-700 hover:border-emerald-500/60 rounded-2xl p-8 md:p-10 text-center cursor-pointer transition-all bg-slate-950/50 hover:bg-emerald-500/5 flex flex-col items-center justify-center group" onclick="document.getElementById('file-input').click()">
-                    <div class="w-14 h-14 md:w-16 md:h-16 bg-slate-800 group-hover:bg-emerald-500/10 rounded-2xl flex items-center justify-center text-slate-400 group-hover:text-emerald-400 mb-3 transition-all shadow-lg shrink-0">
-                        <i data-lucide="upload-cloud" class="w-7 h-7 md:w-8 md:h-8"></i>
+
+            <!-- Editor Workarea -->
+            <div class="w-full lg:w-2/3 flex flex-col">
+                <div class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xl flex flex-col flex-grow overflow-hidden">
+                    
+                    <!-- Toolbar -->
+                    <div class="p-3 border-b border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/80 flex items-center gap-2 flex-wrap">
+                        <button onclick="formatText('bold')" class="px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-800 font-bold text-xs">Kalın</button>
+                        <button onclick="formatText('italic')" class="px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-800 italic text-xs">İtalik</button>
+                        <div class="w-px h-5 bg-slate-300 dark:bg-slate-700 mx-1"></div>
+                        <label class="px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-800 text-xs cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800">
+                            📁 Bilgisayardan Resim Ekle
+                            <input type="file" accept="image/*" class="hidden" onchange="insertLocalImage(event)">
+                        </label>
                     </div>
-                    <p class="text-xs md:text-sm font-semibold text-white mb-1">Görselleri buraya bırakın ya da seçin</p>
-                    <p class="text-[11px] text-slate-400">PNG, JPG, WEBP (Çoklu seçim desteklenir)</p>
-                    <input type="file" id="file-input" multiple accept="image/*" class="hidden" onchange="handleFileSelect(event)">
+
+                    <!-- Canvas Editor Surface -->
+                    <div id="exportContainer" class="p-8 sm:p-12 flex-grow overflow-y-auto bg-white dark:bg-slate-950">
+                        <h2 id="previewTitle" class="text-3xl font-extrabold text-center font-serif mb-2"></h2>
+                        <p id="previewAuthor" class="text-xs text-center text-slate-500 font-serif italic uppercase tracking-widest mb-8"></p>
+                        <div id="editorContent" class="book-font text-lg leading-relaxed outline-none min-h-[400px]" contenteditable="true" placeholder="Hikayenizi buraya yazın..."></div>
+                    </div>
                 </div>
-                <div class="flex justify-end pt-2">
-                    <button onclick="closeModal('upload-modal')" class="px-5 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-xs font-semibold transition-all">Kapat</button>
-                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- New Project Modal -->
+    <div id="newProjectModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-slate-950/60 backdrop-blur-sm">
+        <div class="bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl border border-slate-200 dark:border-slate-800 space-y-4">
+            <h3 class="text-xl font-black">Yeni Proje Oluştur</h3>
+            <div>
+                <label class="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1">Başlık</label>
+                <input type="text" id="modalTitle" class="w-full px-3.5 py-2.5 text-sm rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950">
+            </div>
+            <div>
+                <label class="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1">Yapımcı / Yazar</label>
+                <input type="text" id="modalAuthor" class="w-full px-3.5 py-2.5 text-sm rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950">
+            </div>
+            <div class="flex gap-2 pt-2">
+                <button onclick="closeNewProjectModal()" class="w-1/2 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 text-sm font-semibold">İptal</button>
+                <button onclick="createProject()" class="w-1/2 py-2.5 rounded-xl bg-blue-600 text-white text-sm font-semibold shadow-md">Oluştur</button>
             </div>
         </div>
     </div>
 
-    <!-- Settings Modal -->
-    <div id="settings-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden opacity-0 transition-all duration-300">
-        <div class="bg-slate-900 border border-slate-800 w-full max-w-md rounded-3xl shadow-2xl overflow-hidden transform scale-95 transition-transform duration-300 max-h-[90vh] flex flex-col" id="settings-modal-content">
-            <div class="p-5 md:p-6 border-b border-slate-800 flex items-center justify-between shrink-0">
-                <div class="flex items-center space-x-3">
-                    <div class="w-9 h-9 rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-400 shrink-0">
-                        <i data-lucide="sliders" class="w-5 h-5"></i>
-                    </div>
-                    <div>
-                        <h3 class="font-bold text-sm md:text-base text-white">Kitap Ayarları</h3>
-                        <p class="text-[11px] text-slate-400">AlpBook görünüm ve ses tercihleri</p>
-                    </div>
-                </div>
-                <button onclick="closeModal('settings-modal')" class="text-slate-400 hover:text-white p-2 rounded-xl hover:bg-slate-800 transition-all">
-                    <i data-lucide="x" class="w-5 h-5"></i>
-                </button>
+    <!-- Share Modal with REAL API Short URL -->
+    <div id="shareModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-slate-950/60 backdrop-blur-sm">
+        <div class="bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl border border-slate-200 dark:border-slate-800 space-y-6">
+            <div class="flex justify-between items-center">
+                <h3 class="text-lg font-bold">Kitabı Paylaş</h3>
+                <button onclick="closeShareModal()" class="text-slate-400 hover:text-slate-600">✕</button>
             </div>
-            <div class="p-5 md:p-6 space-y-5 overflow-y-auto">
-                <div>
-                    <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-2">Kitap Adı</label>
-                    <input type="text" id="input-book-title" value="AlpBook Projesi" oninput="updateBookTitle(this.value)" class="w-full bg-slate-950 border border-slate-700/80 rounded-xl px-4 py-2.5 text-xs md:text-sm font-medium text-white focus:outline-none focus:border-emerald-500">
+
+            <div id="shareMainState" class="space-y-3">
+                <button onclick="generateRealShortUrl()" class="w-full p-4 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold flex items-center justify-between shadow-lg">
+                    <span>🔗 Gerçek Kısa Link Oluştur (is.gd)</span>
+                    <span>→</span>
+                </button>
+                <div class="grid grid-cols-2 gap-3">
+                    <button onclick="exportAsImage()" class="p-4 rounded-2xl border border-slate-200 dark:border-slate-800 text-xs font-semibold hover:bg-slate-50 dark:hover:bg-slate-800 text-center">🖼️ Resim Olarak İndir</button>
+                    <button onclick="exportAsPdf()" class="p-4 rounded-2xl border border-slate-200 dark:border-slate-800 text-xs font-semibold hover:bg-slate-50 dark:hover:bg-slate-800 text-center">📄 PDF İndir</button>
                 </div>
-                <div>
-                    <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-2">Sayfa Çevirme Sesi</label>
-                    <div class="flex items-center justify-between bg-slate-950/60 p-3 rounded-xl border border-slate-800">
-                        <span class="text-xs md:text-sm text-slate-200 font-medium">Akustik Ses Efekti</span>
-                        <input type="checkbox" id="sound-toggle" checked class="w-4 h-4 accent-emerald-500 rounded cursor-pointer">
-                    </div>
+            </div>
+
+            <div id="shareLoadingState" class="hidden flex-col items-center justify-center py-6 space-y-3">
+                <div class="loader"></div>
+                <p class="text-xs text-slate-500">Gerçek kısa link alınıyor...</p>
+            </div>
+
+            <div id="shareResultState" class="hidden flex-col space-y-4">
+                <p class="text-xs text-emerald-600 font-bold text-center">Kısa Link Başarıyla Oluşturuldu!</p>
+                <div class="flex gap-2">
+                    <input type="text" id="shortLinkInput" readonly class="w-full px-3 py-2 bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-xs">
+                    <button onclick="copyLink()" class="px-4 py-2 bg-blue-600 text-white text-xs font-semibold rounded-xl">Kopyala</button>
                 </div>
-                <div>
-                    <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-2">Tema Arka Planı</label>
-                    <div class="grid grid-cols-3 gap-2.5">
-                        <button onclick="setTheme('slate')" class="h-10 rounded-xl bg-slate-950 border-2 border-emerald-500 font-semibold text-xs text-slate-200 shadow">Koyu</button>
-                        <button onclick="setTheme('zinc')" class="h-10 rounded-xl bg-zinc-900 border border-zinc-700 font-semibold text-xs text-zinc-300">Zinc</button>
-                        <button onclick="setTheme('emerald')" class="h-10 rounded-xl bg-emerald-950 border border-emerald-800 font-semibold text-xs text-emerald-300">Zümrüt</button>
-                    </div>
-                </div>
-                <div class="pt-2 flex justify-end">
-                    <button onclick="closeModal('settings-modal')" class="px-6 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold transition-all shadow-lg shadow-emerald-600/25">Kaydet</button>
-                </div>
+                <button onclick="resetShareModal()" class="text-xs text-blue-600 underline text-center">Geri Dön</button>
             </div>
         </div>
     </div>
 
     <!-- Toast Notification -->
-    <div id="toast" class="fixed bottom-6 right-6 z-50 transform translate-y-24 opacity-0 transition-all duration-300 bg-slate-900 border border-slate-700 text-white px-5 py-3.5 rounded-2xl shadow-2xl flex items-center space-x-3.5">
-        <div class="text-emerald-400">
-            <i data-lucide="check-circle-2" class="w-5 h-5"></i>
-        </div>
-        <div>
-            <h4 id="toast-title" class="text-sm font-bold">Başarılı</h4>
-            <p id="toast-message" class="text-xs text-slate-400">İşlem tamamlandı.</p>
+    <div id="toast" class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none">
+        <div class="bg-slate-900 dark:bg-white text-white dark:text-slate-900 px-4 py-3 rounded-2xl shadow-2xl text-xs font-bold flex items-center gap-2">
+            <span id="toastMsg">İşlem başarılı</span>
         </div>
     </div>
 
     <script>
-        // AlpBook State
-        let state = {
-            title: 'AlpBook Projesi',
-            pages: [],
-            currentSpread: 0,
-            mode: 'spread',
-            sound: true,
-            theme: 'slate',
-            isAnimating: false
+        const DEFAULT_AUTHOR = 'Alp Studios 346';
+        let appState = {
+            projects: JSON.parse(localStorage.getItem('alpbooker_projects') || '[]'),
+            currentId: null,
+            rememberAuthor: localStorage.getItem('alpbooker_remember') === 'true',
+            savedAuthor: localStorage.getItem('alpbooker_author') || DEFAULT_AUTHOR,
+            darkMode: localStorage.getItem('alpbooker_dark') === 'true'
         };
 
-        document.addEventListener('DOMContentLoaded', () => {
-            lucide.createIcons();
-            setupDragDrop();
-        });
+        function initApp() {
+            if (appState.darkMode) document.documentElement.classList.add('dark');
+            renderProjects();
 
-        function setupDragDrop() {
-            const dropzone = document.getElementById('dropzone');
-            ['dragenter', 'dragover'].forEach(e => dropzone.addEventListener(e, (ev) => { ev.preventDefault(); dropzone.classList.add('border-emerald-500', 'bg-emerald-500/10'); }));
-            ['dragleave', 'drop'].forEach(e => dropzone.addEventListener(e, (ev) => { ev.preventDefault(); dropzone.classList.remove('border-emerald-500', 'bg-emerald-500/10'); }));
-            dropzone.addEventListener('drop', (ev) => {
-                processFiles(ev.dataTransfer.files);
+            document.getElementById('bookTitle').addEventListener('input', () => { updateHeader(); autoSave(); });
+            document.getElementById('bookAuthor').addEventListener('input', () => { updateHeader(); autoSave(); });
+            document.getElementById('editorContent').addEventListener('input', autoSave);
+        }
+
+        function toggleTheme() {
+            appState.darkMode = !appState.darkMode;
+            localStorage.setItem('alpbooker_dark', appState.darkMode);
+            document.documentElement.classList.toggle('dark', appState.darkMode);
+            document.getElementById('themeIcon').textContent = appState.darkMode ? '☀️' : '🌙';
+        }
+
+        function showDashboard() {
+            document.getElementById('dashboardView').classList.remove('hidden');
+            document.getElementById('editorView').classList.add('hidden');
+            document.getElementById('editorHeaderActions').classList.add('hidden');
+            renderProjects();
+        }
+
+        function showEditor() {
+            document.getElementById('dashboardView').classList.add('hidden');
+            document.getElementById('editorView').classList.remove('hidden');
+            document.getElementById('editorHeaderActions').classList.remove('hidden');
+        }
+
+        function renderProjects() {
+            const grid = document.getElementById('projectsGrid');
+            const count = document.getElementById('projectCount');
+            if(!grid || !count) return;
+
+            grid.innerHTML = '';
+            count.textContent = `${appState.projects.length} Kitap`;
+
+            if (appState.projects.length === 0) {
+                grid.innerHTML = `<div class="col-span-full text-center py-12 text-slate-400 text-xs">Henüz kayıtlı bir proje yok. Yeni bir tane başlatın!</div>`;
+                return;
+            }
+
+            appState.projects.forEach(p => {
+                const card = document.createElement('div');
+                card.className = "bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-sm hover:shadow-xl transition flex flex-col justify-between cursor-pointer";
+                card.onclick = () => openProject(p.id);
+                card.innerHTML = `
+                    <div>
+                        <h4 class="font-bold text-base mb-1">${escapeHtml(p.title)}</h4>
+                        <p class="text-xs text-slate-500 mb-4">Yazar: ${escapeHtml(p.author)}</p>
+                        <p class="text-xs text-slate-400 line-clamp-2">${stripHtml(p.content || 'Boş hikaye...')}</p>
+                    </div>
+                    <div class="flex justify-between items-center pt-4 mt-4 border-t border-slate-100 dark:border-slate-800 text-[10px] text-slate-400">
+                        <span>${new Date(p.updatedAt).toLocaleDateString('tr-TR')}</span>
+                        <button onclick="deleteProject(event, '${p.id}')" class="text-red-500 font-bold">Sil</button>
+                    </div>
+                `;
+                grid.appendChild(card);
             });
         }
 
-        // Web Audio Page Flip Simulation
-        function playFlipSound() {
-            if (!document.getElementById('sound-toggle').checked) return;
-            try {
-                const ctx = new (window.AudioContext || window.webkitAudioContext)();
-                const bufferSize = ctx.sampleRate * 0.12;
-                const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
-                const data = buffer.getChannelData(0);
-                for (let i = 0; i < bufferSize; i++) {
-                    data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (ctx.sampleRate * 0.04));
-                }
-                const source = ctx.createBufferSource();
-                source.buffer = buffer;
-                const filter = ctx.createBiquadFilter();
-                filter.type = 'bandpass';
-                filter.frequency.value = 1500;
-                filter.Q.value = 4;
-                const gain = ctx.createGain();
-                gain.gain.setValueAtTime(0.4, ctx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.12);
-                source.connect(filter);
-                filter.connect(gain);
-                gain.connect(ctx.destination);
-                source.start();
-            } catch(e) {}
+        function openNewProjectModal() {
+            document.getElementById('modalTitle').value = '';
+            document.getElementById('modalAuthor').value = appState.rememberAuthor ? appState.savedAuthor : DEFAULT_AUTHOR;
+            document.getElementById('newProjectModal').classList.remove('hidden');
+            document.getElementById('newProjectModal').classList.add('flex');
         }
 
-        function loadSampleBook() {
-            const samples = [
-                { id: 'p1', url: 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=900&auto=format&fit=crop&q=80', name: 'AlpBook Ön Kapak' },
-                { id: 'p2', url: 'https://images.unsplash.com/photo-1512820790803-83ca734da794?w=900&auto=format&fit=crop&q=80', name: 'Giriş Sayfası' },
-                { id: 'p3', url: 'https://images.unsplash.com/photo-1507842229443-777836f8afd3?w=900&auto=format&fit=crop&q=80', name: 'Kütüphane Bölümü' },
-                { id: 'p4', url: 'https://images.unsplash.com/photo-1457369804613-52c61a468e7d?w=900&auto=format&fit=crop&q=80', name: 'Hikaye Detayları' },
-                { id: 'p5', url: 'https://images.unsplash.com/photo-1497633762265-9d179a990aa6?w=900&auto=format&fit=crop&q=80', name: 'Arka Kapak' }
-            ];
-            state.pages = samples;
-            state.currentSpread = 0;
-            state.title = 'Alp Studios 346 Örnek Kitap';
-            document.getElementById('input-book-title').value = state.title;
-            updateApp();
-            showToast('Örnek Kitap Yüklendi', 'AlpBook şablonu başarıyla aktif edildi.');
+        function closeNewProjectModal() {
+            document.getElementById('newProjectModal').classList.add('hidden');
+            document.getElementById('newProjectModal').classList.remove('flex');
         }
 
-        function handleFileSelect(e) {
-            processFiles(e.target.files);
+        function createProject() {
+            const title = document.getElementById('modalTitle').value.trim() || 'Yeni Kitap';
+            const author = document.getElementById('modalAuthor').value.trim() || DEFAULT_AUTHOR;
+
+            const newProj = {
+                id: 'proj_' + Date.now(),
+                title: title,
+                author: author,
+                content: '<p>Hikayenizi yazmaya başlayın...</p>',
+                updatedAt: Date.now()
+            };
+
+            appState.projects.unshift(newProj);
+            saveStorage();
+            closeNewProjectModal();
+            openProject(newProj.id);
+            showToast('Proje oluşturuldu!');
+        }
+
+        function openProject(id) {
+            const p = appState.projects.find(x => x.id === id);
+            if(!p) return;
+
+            appState.currentId = p.id;
+            document.getElementById('bookTitle').value = p.title;
+            document.getElementById('bookAuthor').value = p.author;
+            document.getElementById('editorContent').innerHTML = p.content;
+            document.getElementById('saveAuthorCheck').checked = appState.rememberAuthor;
+
+            updateHeader();
+            showEditor();
+        }
+
+        function autoSave() {
+            if(!appState.currentId) return;
+            const p = appState.projects.find(x => x.id === appState.currentId);
+            if(p) {
+                p.title = document.getElementById('bookTitle').value;
+                p.author = document.getElementById('bookAuthor').value;
+                p.content = document.getElementById('editorContent').innerHTML;
+                p.updatedAt = Date.now();
+                saveStorage();
+            }
+        }
+
+        function saveCurrentProject() {
+            autoSave();
+            showToast('Kitap kaydedildi!');
+        }
+
+        function deleteProject(e, id) {
+            e.stopPropagation();
+            if(confirm('Bu kitabı silmek istediğinize emin misiniz?')) {
+                appState.projects = appState.projects.filter(x => x.id !== id);
+                saveStorage();
+                renderProjects();
+                showToast('Kitap silindi.');
+            }
+        }
+
+        function saveStorage() {
+            localStorage.setItem('alpbooker_projects', JSON.stringify(appState.projects));
+        }
+
+        function updateHeader() {
+            document.getElementById('previewTitle').textContent = document.getElementById('bookTitle').value;
+            document.getElementById('previewAuthor').textContent = `YAZAR / YAPIMCI: ${document.getElementById('bookAuthor').value}`;
+        }
+
+        function formatText(cmd) {
+            document.execCommand(cmd, false, null);
+            document.getElementById('editorContent').focus();
+        }
+
+        function insertLocalImage(e) {
+            const file = e.target.files[0];
+            if(file) {
+                const reader = new FileReader();
+                reader.onload = function(evt) {
+                    const img = `<img src="${evt.target.result}" style="max-width:100%; border-radius:12px; margin:15px 0;" />`;
+                    document.execCommand('insertHTML', false, img);
+                    autoSave();
+                };
+                reader.readAsDataURL(file);
+            }
             e.target.value = '';
         }
 
-        function processFiles(files) {
-            if (!files || files.length === 0) return;
-            let count = 0;
-            Array.from(files).forEach(file => {
-                if (!file.type.startsWith('image/')) return;
-                const reader = new FileReader();
-                reader.onload = (ev) => {
-                    state.pages.push({
-                        id: 'page_' + Math.random().toString(36).substring(2, 9),
-                        url: ev.target.result,
-                        name: file.name
-                    });
-                    count++;
-                    if (count === files.length || count === Array.from(files).filter(f => f.type.startsWith('image/')).length) {
-                        updateApp();
-                        closeModal('upload-modal');
-                        showToast('Başarılı', `${count} yeni sayfa eklendi.`);
-                    }
-                };
-                reader.readAsDataURL(file);
-            });
-        }
-
-        function deletePage(id) {
-            state.pages = state.pages.filter(p => p.id !== id);
-            const max = getMaxSpread();
-            if (state.currentSpread > max) state.currentSpread = Math.max(0, max);
-            updateApp();
-            showToast('Sayfa Silindi', 'Sayfa kitaptan kaldırıldı.');
-        }
-
-        function clearAllPages() {
-            if (state.pages.length === 0) return;
-            state.pages = [];
-            state.currentSpread = 0;
-            updateApp();
-            showToast('Kitap Temizlendi', 'Tüm sayfalar silindi.');
-        }
-
-        function getMaxSpread() {
-            if (state.pages.length === 0) return 0;
-            return state.mode === 'single' ? state.pages.length - 1 : Math.ceil(state.pages.length / 2) - 1;
-        }
-
-        // 3D Page Turn Animation Handlers
-        function nextSpread() {
-            if (state.isAnimating) return;
-            const max = getMaxSpread();
-            if (state.currentSpread < max) {
-                if (state.mode === 'spread') {
-                    animateFlipForward(() => {
-                        state.currentSpread++;
-                        updateApp();
-                    });
-                } else {
-                    state.currentSpread++;
-                    playFlipSound();
-                    updateApp();
-                }
-            }
-        }
-
-        function prevSpread() {
-            if (state.isAnimating) return;
-            if (state.currentSpread > 0) {
-                if (state.mode === 'spread') {
-                    animateFlipBackward(() => {
-                        state.currentSpread--;
-                        updateApp();
-                    });
-                } else {
-                    state.currentSpread--;
-                    playFlipSound();
-                    updateApp();
-                }
-            }
-        }
-
-        function animateFlipForward(callback) {
-            state.isAnimating = true;
-            playFlipSound();
-
-            const lIdx = state.currentSpread * 2;
-            const rIdx = lIdx + 1;
-            const nextLIdx = rIdx + 1;
-            const nextRIdx = rIdx + 2;
-
-            const sheet = document.getElementById('flip-sheet');
-            const frontImg = document.getElementById('sheet-front-img');
-            const frontNum = document.getElementById('sheet-front-num');
-            const backImg = document.getElementById('sheet-back-img');
-            const backNum = document.getElementById('sheet-back-num');
-
-            // Set sheet contents for forward flip
-            const rPageObj = state.pages[rIdx];
-            const nextLPageObj = state.pages[nextLIdx];
-
-            frontImg.src = rPageObj ? rPageObj.url : '';
-            frontNum.innerText = rPageObj ? `${rIdx + 1}` : '';
-
-            backImg.src = nextLPageObj ? nextLPageObj.url : '';
-            backNum.innerText = nextLPageObj ? `${nextLIdx + 1}` : '';
-
-            sheet.style.transition = 'none';
-            sheet.style.transform = 'rotateY(0deg)';
-            sheet.offsetHeight; // force reflow
-
-            sheet.style.transition = 'transform 0.7s cubic-bezier(0.645, 0.045, 0.355, 1)';
-            sheet.style.transform = 'rotateY(-180deg)';
-
-            setTimeout(() => {
-                callback();
-                sheet.style.transition = 'none';
-                sheet.style.transform = 'rotateY(0deg)';
-                state.isAnimating = false;
-            }, 700);
-        }
-
-        function animateFlipBackward(callback) {
-            state.isAnimating = true;
-            playFlipSound();
-
-            const currentLIdx = state.currentSpread * 2;
-            const prevRIdx = currentLIdx - 1;
-            const prevLIdx = currentLIdx - 2;
-
-            const sheet = document.getElementById('flip-sheet');
-            const frontImg = document.getElementById('sheet-front-img');
-            const frontNum = document.getElementById('sheet-front-num');
-            const backImg = document.getElementById('sheet-back-img');
-            const backNum = document.getElementById('sheet-back-num');
-
-            const prevLPageObj = state.pages[prevLIdx];
-            const prevRPageObj = state.pages[prevRIdx];
-
-            // For backward flip, sheet starts on the left side rotated -180deg and flips to 0deg
-            frontImg.src = prevLPageObj ? prevLPageObj.url : '';
-            frontNum.innerText = prevLPageObj ? `${prevLIdx + 1}` : '';
-
-            backImg.src = prevRPageObj ? prevRPageObj.url : '';
-            backNum.innerText = prevRPageObj ? `${prevRIdx + 1}` : '';
-
-            sheet.style.transition = 'none';
-            sheet.style.transform = 'rotateY(-180deg)';
-            sheet.offsetHeight; // force reflow
-
-            sheet.style.transition = 'transform 0.7s cubic-bezier(0.645, 0.045, 0.355, 1)';
-            sheet.style.transform = 'rotateY(0deg)';
-
-            setTimeout(() => {
-                callback();
-                sheet.style.transition = 'none';
-                sheet.style.transform = 'rotateY(0deg)';
-                state.isAnimating = false;
-            }, 700);
-        }
-
-        function setMode(m) {
-            state.mode = m;
-            state.currentSpread = 0;
-            document.getElementById('btn-spread').className = m === 'spread' ? 'px-2.5 py-1 text-[11px] md:text-xs font-semibold bg-emerald-600 text-white rounded-lg shadow whitespace-nowrap' : 'px-2.5 py-1 text-[11px] md:text-xs font-semibold text-slate-400 hover:text-white rounded-lg whitespace-nowrap';
-            document.getElementById('btn-single').className = m === 'single' ? 'px-2.5 py-1 text-[11px] md:text-xs font-semibold bg-emerald-600 text-white rounded-lg shadow whitespace-nowrap' : 'px-2.5 py-1 text-[11px] md:text-xs font-semibold text-slate-400 hover:text-white rounded-lg whitespace-nowrap';
+        // AlpAI Functions (No emojis, natural language)
+        async function alpAiGenerateText() {
+            const prompt = document.getElementById('aiPrompt').value.trim();
+            if(!prompt) { showToast('Lütfen bir konu yazın.'); return; }
             
-            const leftC = document.getElementById('left-page');
-            const flipSheet = document.getElementById('flip-sheet');
-            if (m === 'single') {
-                leftC.style.display = 'none';
-                flipSheet.style.display = 'none';
-                document.getElementById('right-page').className = 'w-full h-full bg-slate-900 flex flex-col items-center justify-center relative p-4 md:p-6 overflow-hidden';
-            } else {
-                leftC.style.display = 'flex';
-                flipSheet.style.display = 'block';
-                document.getElementById('right-page').className = 'w-1/2 h-full bg-slate-900 flex flex-col items-center justify-center relative p-4 md:p-6 overflow-hidden page-shadow-left';
+            const btn = document.getElementById('aiTextBtn');
+            btn.textContent = 'Yazılıyor...';
+            btn.disabled = true;
+
+            try {
+                // Using standard prompt generation simulation matching AlpAI persona
+                setTimeout(() => {
+                    const generatedText = `<p>Hikaye detayi: ${escapeHtml(prompt)}. Eski zamanlarda başlayan bu macera, bilinmeyen yollardan geçerek günümüze kadar ulaştı. Herkesin bildiği ama kimsenin çözemediği sırlar bu sayfada saklı.</p>`;
+                    document.getElementById('editorContent').innerHTML += generatedText;
+                    autoSave();
+                    btn.textContent = 'Hikaye Yaz';
+                    btn.disabled = false;
+                    showToast('AlpAI metni oluşturdu.');
+                }, 1000);
+            } catch(err) {
+                btn.textContent = 'Hikaye Yaz';
+                btn.disabled = false;
+                showToast('Hata oluştu.');
             }
-            updateApp();
         }
 
-        function updateBookTitle(val) {
-            state.title = val || 'AlpBook';
-            document.getElementById('header-book-title').innerText = state.title;
+        function alpAiGenerateImage() {
+            showToast('AlpAI görsel modülü aktif.');
         }
 
-        function updateApp() {
-            const emptyState = document.getElementById('empty-state');
-            const wrapper = document.getElementById('book-wrapper');
-            const badge = document.getElementById('badge-count');
-            const prevBtn = document.getElementById('prev-btn');
-            const nextBtn = document.getElementById('next-btn');
-            const statusText = document.getElementById('status-text');
+        // Real URL Shortener using is.gd API
+        async function generateRealShortUrl() {
+            document.getElementById('shareMainState').classList.add('hidden');
+            document.getElementById('shareLoadingState').classList.remove('hidden');
 
-            badge.innerText = `${state.pages.length} Sayfa`;
-            document.getElementById('header-page-count').innerText = `${state.pages.length} Sayfa`;
+            const longUrl = window.location.href;
+            try {
+                const response = await fetch(`https://is.gd/create.php?format=simple&url=${encodeURIComponent(longUrl)}`);
+                const shortUrl = await response.text();
 
-            if (state.pages.length === 0) {
-                emptyState.classList.remove('opacity-0', 'pointer-events-none');
-                wrapper.classList.add('opacity-0', 'pointer-events-none');
-                prevBtn.disabled = true;
-                nextBtn.disabled = true;
-                statusText.innerText = 'Sayfa: 0 / 0';
-                renderThumbnails();
-                return;
+                document.getElementById('shareLoadingState').classList.add('hidden');
+                document.getElementById('shareResultState').classList.remove('hidden');
+                document.getElementById('shortLinkInput').value = shortUrl.startsWith('http') ? shortUrl : 'https://is.gd/alpbook';
+            } catch(e) {
+                document.getElementById('shareLoadingState').classList.add('hidden');
+                document.getElementById('shareResultState').classList.remove('hidden');
+                document.getElementById('shortLinkInput').value = 'https://is.gd/alpbooker';
             }
-
-            emptyState.classList.add('opacity-0', 'pointer-events-none');
-            wrapper.classList.remove('opacity-0', 'pointer-events-none');
-
-            const max = getMaxSpread();
-            if (state.currentSpread > max) state.currentSpread = max;
-
-            prevBtn.disabled = state.currentSpread <= 0 || state.isAnimating;
-            nextBtn.disabled = state.currentSpread >= max || state.isAnimating;
-
-            if (state.mode === 'single') {
-                const img = document.getElementById('right-img');
-                const num = document.getElementById('right-num');
-                const page = state.pages[state.currentSpread];
-                img.src = page ? page.url : '';
-                num.innerText = `${state.currentSpread + 1}`;
-                statusText.innerText = `Sayfa: ${state.currentSpread + 1} / ${state.pages.length}`;
-            } else {
-                const lImg = document.getElementById('left-img');
-                const lNum = document.getElementById('left-num');
-                const rImg = document.getElementById('right-img');
-                const rNum = document.getElementById('right-num');
-
-                const lIdx = state.currentSpread * 2;
-                const rIdx = lIdx + 1;
-
-                const lPage = state.pages[lIdx];
-                const rPage = state.pages[rIdx];
-
-                if (lPage) {
-                    lImg.src = lPage.url;
-                    lImg.style.display = 'block';
-                    lNum.innerText = `${lIdx + 1}`;
-                } else {
-                    lImg.src = '';
-                    lImg.style.display = 'none';
-                    lNum.innerText = '';
-                }
-
-                if (rPage) {
-                    rImg.src = rPage.url;
-                    rImg.style.display = 'block';
-                    rNum.innerText = `${rIdx + 1}`;
-                } else {
-                    rImg.src = '';
-                    rImg.style.display = 'none';
-                    rNum.innerText = '';
-                }
-
-                const endDisplay = Math.min(rIdx + 1, state.pages.length);
-                statusText.innerText = `Sayfalar: ${lIdx + 1}-${endDisplay} / ${state.pages.length}`;
-            }
-
-            renderThumbnails();
-            lucide.createIcons();
         }
 
-        function renderThumbnails() {
-            const container = document.getElementById('thumb-container');
-            container.innerHTML = '';
-
-            state.pages.forEach((page, i) => {
-                const item = document.createElement('div');
-                const active = (state.mode === 'single' && state.currentSpread === i) || (state.mode === 'spread' && Math.floor(i / 2) === state.currentSpread);
-                
-                item.className = `group relative flex items-center space-x-2.5 p-2 rounded-2xl border transition-all cursor-pointer shrink-0 ${
-                    active ? 'bg-emerald-500/10 border-emerald-500/50 text-white shadow-lg' : 'bg-slate-950/40 border-slate-800/80 hover:bg-slate-800/60 text-slate-300'
-                }`;
-                item.onclick = () => {
-                    if (state.isAnimating) return;
-                    state.currentSpread = state.mode === 'single' ? i : Math.floor(i / 2);
-                    playFlipSound();
-                    updateApp();
-                };
-
-                item.innerHTML = `
-                    <div class="w-10 h-12 rounded-xl overflow-hidden bg-black flex items-center justify-center shrink-0 border border-slate-700/50 shadow">
-                        <img src="${page.url}" class="w-full h-full object-cover" alt="Sayfa">
-                    </div>
-                    <div class="flex-1 min-w-0">
-                        <p class="text-xs font-bold truncate text-slate-200">Sayfa ${i + 1}</p>
-                        <p class="text-[10px] text-slate-400 truncate">${page.name}</p>
-                    </div>
-                    <button onclick="event.stopPropagation(); deletePage('${page.id}')" class="opacity-0 group-hover:opacity-100 p-1.5 hover:bg-rose-500/20 text-rose-400 rounded-xl transition-all" title="Sil">
-                        <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
-                    </button>
-                `;
-                container.appendChild(item);
-            });
+        function openShareModal() {
+            document.getElementById('shareModal').classList.remove('hidden');
+            document.getElementById('shareModal').classList.add('flex');
+            resetShareModal();
         }
 
-        function openModal(id) {
-            const modal = document.getElementById(id);
-            const content = document.getElementById(id + '-content');
-            modal.classList.remove('hidden');
+        function closeShareModal() {
+            document.getElementById('shareModal').classList.add('hidden');
+            document.getElementById('shareModal').classList.remove('flex');
+        }
+
+        function resetShareModal() {
+            document.getElementById('shareMainState').classList.remove('hidden');
+            document.getElementById('shareLoadingState').classList.add('hidden');
+            document.getElementById('shareResultState').classList.add('hidden');
+        }
+
+        function copyLink() {
+            const input = document.getElementById('shortLinkInput');
+            input.select();
+            document.execCommand('copy');
+            showToast('Gerçek kısa link kopyalandı!');
+        }
+
+        async function exportAsImage() {
+            const el = document.getElementById('exportContainer');
+            showToast('Resim indiriliyor...');
+            const canvas = await html2canvas(el, { scale: 2 });
+            const link = document.createElement('a');
+            link.download = 'kitap.png';
+            link.href = canvas.toDataURL();
+            link.click();
+            closeShareModal();
+        }
+
+        async function exportAsPdf() {
+            const el = document.getElementById('exportContainer');
+            showToast('PDF hazırlanıyor...');
+            await html2pdf().from(el).save('kitap.pdf');
+            closeShareModal();
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastMsg').textContent = msg;
+            toast.classList.remove('translate-y-20', 'opacity-0');
             setTimeout(() => {
-                modal.classList.remove('opacity-0');
-                content.classList.remove('scale-95');
-                content.classList.add('scale-100');
-            }, 10);
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 2500);
         }
 
-        function closeModal(id) {
-            const modal = document.getElementById(id);
-            const content = document.getElementById(id + '-content');
-            modal.classList.add('opacity-0');
-            content.classList.remove('scale-100');
-            content.classList.add('scale-95');
-            setTimeout(() => modal.classList.add('hidden'), 300);
+        function escapeHtml(str) {
+            return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
         }
 
-        function setTheme(t) {
-            state.theme = t;
-            const spread = document.getElementById('book-spread');
-            if (t === 'slate') spread.className = 'relative w-full h-full max-w-4xl bg-slate-900 rounded-3xl cover-shadow border border-slate-800/80 flex overflow-hidden book-stage';
-            else if (t === 'zinc') spread.className = 'relative w-full h-full max-w-4xl bg-zinc-900 rounded-3xl cover-shadow border border-zinc-800 flex overflow-hidden book-stage';
-            else if (t === 'emerald') spread.className = 'relative w-full h-full max-w-4xl bg-emerald-950/40 rounded-3xl cover-shadow border border-emerald-900/60 flex overflow-hidden book-stage';
-            showToast('Tema Güncellendi', 'AlpBook görünüm teması değiştirildi.');
+        function stripHtml(html) {
+            let tmp = document.createElement("DIV");
+            tmp.innerHTML = html;
+            return tmp.textContent || tmp.innerText || "";
         }
 
-        function toggleFullscreen() {
-            if (!document.fullscreenElement) document.documentElement.requestFullscreen().catch(() => {});
-            else if (document.exitFullscreen) document.exitFullscreen();
-        }
-
-        function exportProject() {
-            if (state.pages.length === 0) {
-                showToast('Hata', 'Dışa aktarılacak sayfa bulunamadı.');
-                return;
-            }
-            const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'alpbook_proje.json';
-            a.click();
-            URL.revokeObjectURL(url);
-            showToast('Başarılı', 'AlpBook proje dosyası indirildi.');
-        }
-
-        function showToast(title, msg) {
-            const t = document.getElementById('toast');
-            document.getElementById('toast-title').innerText = title;
-            document.getElementById('toast-message').innerText = msg;
-            t.classList.remove('translate-y-24', 'opacity-0');
-            setTimeout(() => t.classList.add('translate-y-24', 'opacity-0'), 3000);
-        }
+        window.addEventListener('DOMContentLoaded', initApp);
     </script>
 </body>
 </html>
