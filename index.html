@@ -63,7 +63,7 @@
         
         <div id="pageManagerDrawer" class="hidden mb-6 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xl space-y-4 z-30">
             <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
-                <h3 class="font-bold text-xs text-slate-700 dark:text-slate-200 uppercase tracking-wider">AlpBook Sayfa Görsel Listesi</h3>
+                <h3 class="font-bold text-xs text-slate-700 dark:text-slate-200 uppercase tracking-wider">Sayfa Görsel Listesi</h3>
                 <button onclick="togglePageManager()" class="text-slate-400 hover:text-slate-600 font-bold text-xs">✕ Kapat</button>
             </div>
             <div id="pageManagerContent" class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-4 max-h-64 overflow-y-auto p-1"></div>
@@ -73,15 +73,15 @@
             <div class="rounded-3xl bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-700 p-8 sm:p-12 text-white shadow-2xl relative overflow-hidden">
                 <div class="relative z-10 max-w-xl">
                     <span class="px-3 py-1 rounded-full bg-white/20 text-xs font-bold uppercase tracking-wider mb-4 inline-block">Alp Studios 346</span>
-                    <h2 class="text-3xl sm:text-4xl font-black mb-4">Gerçek Görsel Kitaplar <br>Nano Banana Karakter Destekli</h2>
-                    <p class="text-blue-100 text-sm mb-6">Gerçek yüksek kaliteli görselleri yükle, karakter referanslarıyla tutarlı dijital kitap projeleri tasarla.</p>
-                    <button onclick="openNewProjectModal()" class="px-6 py-3 rounded-2xl bg-white text-blue-700 font-bold text-xs shadow-lg hover:bg-blue-50 transition">Yeni AlpBook Başlat</button>
+                    <h2 class="text-3xl sm:text-4xl font-black mb-4">Dijital Kitap ve Dergi Tasarım Stüdyosu</h2>
+                    <p class="text-blue-100 text-sm mb-6">Profesyonel dijital yayınlar oluşturun, akıllı motor ile sayfalarınızı yönetin ve anında yayınlayın.</p>
+                    <button onclick="openNewProjectModal()" class="px-6 py-3 rounded-2xl bg-white text-blue-700 font-bold text-xs shadow-lg hover:bg-blue-50 transition">Yeni Proje Başlat</button>
                 </div>
             </div>
 
             <div>
                 <div class="flex items-center justify-between mb-6">
-                    <h3 class="text-base font-bold">Kayıtlı AlpBook Projelerim</h3>
+                    <h3 class="text-base font-bold">Kayıtlı Projelerim</h3>
                     <span id="projectCount" class="text-xs font-semibold px-3 py-1 rounded-full bg-slate-200 dark:bg-slate-800">0 Kitap</span>
                 </div>
                 <div id="projectsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
@@ -98,9 +98,9 @@
                     </div>
                 </div>
                 <div class="flex items-center gap-2">
-                    <button onclick="prevPage()" class="px-4 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 font-bold text-xs transition">◀ Önceki Görsel</button>
+                    <button onclick="prevPage()" class="px-4 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 font-bold text-xs transition">◀ Önceki</button>
                     <span id="pageIndicatorText" class="text-xs font-extrabold px-3 py-2 bg-blue-50 dark:bg-blue-950/40 text-blue-600 rounded-xl">1 / 1</span>
-                    <button onclick="nextPage()" class="px-4 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 font-bold text-xs transition">Sonraki Görsel ▶</button>
+                    <button onclick="nextPage()" class="px-4 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 font-bold text-xs transition">Sonraki ▶</button>
                 </div>
             </div>
 
@@ -135,18 +135,18 @@
                     </div>
 
                     <div class="absolute bottom-4 flex items-center gap-4 bg-slate-900/80 backdrop-blur-md px-4 py-2 rounded-2xl text-white text-xs">
-                        <span class="font-medium">Nano Banana Gerçek Görsel Modu</span>
+                        <span class="font-medium">Sayfa Görüntüleyici</span>
                     </div>
                 </div>
 
                 <div class="w-full lg:w-1/4 space-y-4">
                     <div class="p-6 rounded-3xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm space-y-4">
-                        <h3 class="font-bold text-xs text-slate-500 uppercase tracking-wider">Görsel Sayfa Kontrolleri</h3>
+                        <h3 class="font-bold text-xs text-slate-500 uppercase tracking-wider">Sayfa İşlemleri</h3>
                         
                         <div>
-                            <label class="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1">Sayfa Görseli (Dosyadan)</label>
+                            <label class="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1">Sayfa Görseli Yükle</label>
                             <label class="w-full py-3 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold flex items-center justify-center gap-2 cursor-pointer transition">
-                                📁 Görsel Dosyası Yükle
+                                📁 Dosya Seç
                                 <input type="file" id="fileUploadInput" accept="image/*" class="hidden" onchange="handleImageUpload(event)">
                             </label>
                         </div>
@@ -158,8 +158,8 @@
                         <div class="flex items-center gap-2">
                             <div class="w-7 h-7 rounded-lg bg-amber-500 text-white font-bold flex items-center justify-center text-[10px]">🍌</div>
                             <div>
-                                <h3 class="font-bold text-xs">Nano Banana AI Engine</h3>
-                                <p class="text-[10px] text-slate-500">Gerçek Karakter & Sahne Üretimi</p>
+                                <h3 class="font-bold text-xs">Nano Banana Engine</h3>
+                                <p class="text-[10px] text-slate-500">Akıllı Sahne Üretimi</p>
                             </div>
                         </div>
 
@@ -175,11 +175,11 @@
                         </div>
 
                         <div>
-                            <label class="block text-[11px] font-bold text-slate-600 dark:text-slate-400 mb-1">Sahne İstemi (Prompt)</label>
+                            <label class="block text-[11px] font-bold text-slate-600 dark:text-slate-400 mb-1">Sahne Tanımı (Prompt)</label>
                             <input type="text" id="aiPrompt" placeholder="Örn: Ormanda macera sahnesi..." class="w-full p-2.5 text-xs rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 focus:outline-none focus:ring-2 focus:ring-amber-500">
                         </div>
 
-                        <button onclick="generateNanoBananaPage()" id="aiBtn" class="w-full py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-bold text-xs shadow-md transition">Nano Banana İle Gerçek Görsel Üret</button>
+                        <button onclick="generateNanoBananaPage()" id="aiBtn" class="w-full py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-bold text-xs shadow-md transition">Akıllı Sahne Oluştur</button>
                     </div>
                 </div>
 
@@ -189,13 +189,13 @@
 
     <div id="newProjectModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-slate-950/60 backdrop-blur-sm">
         <div class="bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl border border-slate-200 dark:border-slate-800 space-y-4">
-            <h3 class="text-lg font-black">Yeni AlpBook Projesi</h3>
+            <h3 class="text-lg font-black">Yeni Proje Oluştur</h3>
             <div>
                 <label class="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1">Kitap / Dergi Adı</label>
                 <input type="text" id="modalTitle" class="w-full px-3.5 py-2.5 text-sm rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950">
             </div>
             <div>
-                <label class="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1">Yayıncı / Şirket</label>
+                <label class="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1">Yayıncı / Yazar</label>
                 <input type="text" id="modalAuthor" value="Alp Studios 346" class="w-full px-3.5 py-2.5 text-sm rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950">
             </div>
             <div class="flex gap-2 pt-2">
@@ -208,13 +208,13 @@
     <div id="shareModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-slate-950/60 backdrop-blur-sm">
         <div class="bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl border border-slate-200 dark:border-slate-800 space-y-6">
             <div class="flex justify-between items-center">
-                <h3 class="text-base font-bold">AlpBook'u Yayınla & Paylaş</h3>
+                <h3 class="text-base font-bold">Yayınla & Paylaş</h3>
                 <button onclick="closeShareModal()" class="text-slate-400 hover:text-slate-600">✕</button>
             </div>
 
             <div id="shareMainState" class="space-y-3">
                 <button onclick="generateTinyUrlApiRequest()" class="w-full p-4 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold flex items-center justify-between shadow-lg">
-                    <span>🔗 TinyURL POST İstegi İle Kısalt</span>
+                    <span>🔗 Bağlantıyı Kısalt</span>
                     <span>→</span>
                 </button>
                 <div class="grid grid-cols-2 gap-3">
@@ -225,11 +225,11 @@
 
             <div id="shareLoadingState" class="hidden flex-col items-center justify-center py-6 space-y-3">
                 <div class="loader"></div>
-                <p class="text-xs text-slate-500">TinyURL API sunucusuna bağlanılıyor...</p>
+                <p class="text-xs text-slate-500">Bağlantı oluşturuluyor...</p>
             </div>
 
             <div id="shareResultState" class="hidden flex-col space-y-4">
-                <p class="text-xs text-emerald-600 font-bold text-center">AlpBook Linki Başarıyla Üretildi!</p>
+                <p class="text-xs text-emerald-600 font-bold text-center">Yayın Bağlantısı Hazır!</p>
                 <div class="flex gap-2">
                     <input type="text" id="shortLinkInput" readonly class="w-full px-3 py-2 bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-xs font-mono">
                     <button onclick="copyShortLink()" class="px-4 py-2 bg-blue-600 text-white text-xs font-semibold rounded-xl">Kopyala</button>
@@ -247,31 +247,42 @@
 
     <script>
         const DEFAULT_AUTHOR = 'Alp Studios 346';
-        
-        // Gerçek ve yüksek kaliteli fotoğraf havuzu (Unsplash kaynaklı güvenilir gerçek görseller)
-        const REAL_PHOTOS_POOL = [
-            'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=1200&auto=format&fit=crop&q=80',
-            'https://images.unsplash.com/photo-1512820790803-83ca734da794?w=1200&auto=format&fit=crop&q=80',
-            'https://images.unsplash.com/photo-1497633762265-9d179a990aa6?w=1200&auto=format&fit=crop&q=80',
-            'https://images.unsplash.com/photo-1506880018603-83d5b814b5a6?w=1200&auto=format&fit=crop&q=80',
-            'https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?w=1200&auto=format&fit=crop&q=80',
-            'https://images.unsplash.com/photo-1532012197267-da84d127e765?w=1200&auto=format&fit=crop&q=80',
-            'https://images.unsplash.com/photo-1516979187457-637abb4f9353?w=1200&auto=format&fit=crop&q=80',
-            'https://images.unsplash.com/photo-1457369804613-52c61a468e7d?w=1200&auto=format&fit=crop&q=80'
-        ];
+
+        function createBase64Placeholder(text = "Sayfa İçeriği") {
+            const canvas = document.createElement('canvas');
+            canvas.width = 1200;
+            canvas.height = 800;
+            const ctx = canvas.getContext('2d');
+            
+            const grad = ctx.createLinearGradient(0, 0, 1200, 800);
+            grad.addColorStop(0, '#1e293b');
+            grad.addColorStop(1, '#0f172a');
+            ctx.fillStyle = grad;
+            ctx.fillRect(0, 0, 1200, 800);
+            
+            ctx.strokeStyle = '#3b82f6';
+            ctx.lineWidth = 12;
+            ctx.strokeRect(40, 40, 1120, 720);
+            
+            ctx.fillStyle = '#ffffff';
+            ctx.font = 'bold 54px "Plus Jakarta Sans", sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText(text, 600, 360);
+            
+            ctx.fillStyle = '#94a3b8';
+            ctx.font = '300 28px "Plus Jakarta Sans", sans-serif';
+            ctx.fillText('Alp Studios 346', 600, 430);
+            
+            return canvas.toDataURL('image/jpeg', 0.9);
+        }
 
         let appState = {
-            projects: JSON.parse(localStorage.getItem('alp_books_v4') || '[]'),
+            projects: JSON.parse(localStorage.getItem('alp_books_v6') || '[]'),
             currentId: null,
             currentPageIndex: 0,
             darkMode: localStorage.getItem('alp_book_dark') === 'true',
             characterReferenceImage: null
         };
-
-        function getRandomRealPhoto() {
-            const randomIndex = Math.floor(Math.random() * REAL_PHOTOS_POOL.length);
-            return REAL_PHOTOS_POOL[randomIndex];
-        }
 
         function playFlipSound() {
             try {
@@ -337,7 +348,7 @@
             count.textContent = `${appState.projects.length} Kitap`;
 
             if (appState.projects.length === 0) {
-                grid.innerHTML = `<div class="col-span-full text-center py-12 text-slate-400 text-xs">Henüz kayıtlı görsel AlpBook yok. Yeni bir tane oluşturun!</div>`;
+                grid.innerHTML = `<div class="col-span-full text-center py-12 text-slate-400 text-xs">Henüz kayıtlı proje yok. Yeni bir tane oluşturun!</div>`;
                 return;
             }
 
@@ -357,7 +368,7 @@
                         </div>
                     </div>
                     <div class="flex justify-between items-center pt-2 border-t border-slate-100 dark:border-slate-800 text-[10px] text-slate-400">
-                        <span>${p.pages.length} Sayfa Görseli</span>
+                        <span>${p.pages.length} Sayfa</span>
                         <button onclick="deleteProject(event, '${p.id}')" class="text-red-500 font-bold">Sil</button>
                     </div>
                 `;
@@ -378,14 +389,14 @@
         }
 
         function createNewProject() {
-            const title = document.getElementById('modalTitle').value.trim() || 'Yeni Gerçek Görsel Kitap';
+            const title = document.getElementById('modalTitle').value.trim() || 'Yeni Proje';
             const author = document.getElementById('modalAuthor').value.trim() || DEFAULT_AUTHOR;
 
             const newProj = {
                 id: 'book_' + Date.now(),
                 title: title,
                 author: author,
-                pages: [getRandomRealPhoto(), getRandomRealPhoto()],
+                pages: [createBase64Placeholder('Kapak Sayfası'), createBase64Placeholder('İkinci Sayfa')],
                 updatedAt: Date.now()
             };
 
@@ -393,7 +404,7 @@
             saveStorage();
             closeNewProjectModal();
             openProject(newProj.id);
-            showToast('Gerçek görsel AlpBook projesi başlatıldı!');
+            showToast('Proje başarıyla oluşturuldu.');
         }
 
         function openProject(id) {
@@ -475,7 +486,7 @@
                         p.pages[appState.currentPageIndex] = evt.target.result;
                         autoSave();
                         loadSpreadToViewer();
-                        showToast('Gerçek sayfa görseli yüklendi!');
+                        showToast('Görsel başarıyla eklendi.');
                     }
                 };
                 reader.readAsDataURL(file);
@@ -491,7 +502,7 @@
                     appState.characterReferenceImage = evt.target.result;
                     document.getElementById('charRefLabel').textContent = file.name;
                     document.getElementById('clearCharRefBtn').classList.remove('hidden');
-                    showToast('Karakter referansı başarıyla yüklendi!');
+                    showToast('Karakter referansı yüklendi.');
                 };
                 reader.readAsDataURL(file);
             }
@@ -508,18 +519,18 @@
         function addNewPage() {
             const p = getCurrentProject();
             if(!p) return;
-            p.pages.push(getRandomRealPhoto());
+            p.pages.push(createBase64Placeholder(`Sayfa ${p.pages.length + 1}`));
             appState.currentPageIndex = p.pages.length - 1;
             autoSave();
             loadSpreadToViewer();
-            showToast('Yeni gerçek görsel sayfası eklendi.');
+            showToast('Yeni sayfa eklendi.');
         }
 
         function deleteCurrentPage() {
             const p = getCurrentProject();
             if(!p) return;
             if(p.pages.length <= 1) {
-                showToast('En az bir sayfa görseli kalmalıdır.');
+                showToast('En az bir sayfa kalmalıdır.');
                 return;
             }
             p.pages.splice(appState.currentPageIndex, 1);
@@ -528,7 +539,7 @@
             }
             autoSave();
             loadSpreadToViewer();
-            showToast('Sayfa görseli kaldırıldı.');
+            showToast('Sayfa kaldırıldı.');
         }
 
         function renderPageManagerDrawerList() {
@@ -564,7 +575,7 @@
 
         function deleteProject(e, id) {
             e.stopPropagation();
-            if(confirm('Bu AlpBook projesini silmek istediğinize emin misiniz?')) {
+            if(confirm('Bu projeyi silmek istediğinize emin misiniz?')) {
                 appState.projects = appState.projects.filter(x => x.id !== id);
                 saveStorage();
                 renderProjectsList();
@@ -573,34 +584,54 @@
         }
 
         function saveStorage() {
-            localStorage.setItem('alp_books_v4', JSON.stringify(appState.projects));
+            localStorage.setItem('alp_books_v6', JSON.stringify(appState.projects));
         }
 
         function generateNanoBananaPage() {
             const prompt = document.getElementById('aiPrompt').value.trim();
-            if(!prompt) { showToast('Lütfen Nano Banana için sahne promptu yazın.'); return; }
+            if(!prompt) { showToast('Lütfen bir sahne tanımı yazın.'); return; }
 
             const btn = document.getElementById('aiBtn');
             const hasCharRef = appState.characterReferenceImage !== null;
-            btn.textContent = hasCharRef ? 'Karakter Eşleştiriliyor (Nano Banana)...' : 'Gerçek Görsel Üretiliyor...';
+            btn.textContent = 'Sahne Oluşturuluyor...';
             btn.disabled = true;
 
-            // Nano Banana Engine simulation with real photos selection
             setTimeout(() => {
-                const realPhoto = getRandomRealPhoto();
+                const canvas = document.createElement('canvas');
+                canvas.width = 1200;
+                canvas.height = 800;
+                const ctx = canvas.getContext('2d');
+                
+                ctx.fillStyle = hasCharRef ? '#31103f' : '#0f172a';
+                ctx.fillRect(0, 0, 1200, 800);
+                
+                ctx.strokeStyle = hasCharRef ? '#eab308' : '#3b82f6';
+                ctx.lineWidth = 14;
+                ctx.strokeRect(40, 40, 1120, 720);
+                
+                ctx.fillStyle = '#ffffff';
+                ctx.font = 'bold 46px "Plus Jakarta Sans", sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText(`"${prompt.substring(0, 35)}..."`, 600, 340);
+                
+                ctx.fillStyle = '#e2e8f0';
+                ctx.font = '600 24px "Plus Jakarta Sans", sans-serif';
+                ctx.fillText(hasCharRef ? 'Karakter Destekli Sahne' : 'Nano Banana Sahnesi', 600, 420);
+
+                const base64Result = canvas.toDataURL('image/jpeg', 0.9);
+
                 const p = getCurrentProject();
                 if(p) {
-                    p.pages[appState.currentPageIndex] = realPhoto;
+                    p.pages[appState.currentPageIndex] = base64Result;
                     autoSave();
                     loadSpreadToViewer();
                 }
-                btn.textContent = 'Nano Banana İle Gerçek Görsel Üret';
+                btn.textContent = 'Akıllı Sahne Oluştur';
                 btn.disabled = false;
-                showToast(hasCharRef ? 'Karakter kilidi korunarak gerçek görsel üretildi!' : 'Nano Banana gerçek görseli sayfaya eklendi!');
-            }, 1200);
+                showToast('Sahne başarıyla oluşturuldu.');
+            }, 1000);
         }
 
-        // TinyURL API POST Request
         async function generateTinyUrlApiRequest() {
             document.getElementById('shareMainState').classList.add('hidden');
             document.getElementById('shareLoadingState').classList.remove('hidden');
@@ -643,7 +674,7 @@
                 document.getElementById('shortLinkInput').value = shortUrl.startsWith('http') ? shortUrl : 'https://tinyurl.com/alpbooker';
             } catch(err) {
                 document.getElementById('shareLoadingState').classList.add('hidden');
-                document.getElementById('shareResultState').classList.remove('hidden');
+                document.getElementById('shareResultState').classList.add('hidden');
                 document.getElementById('shortLinkInput').value = 'https://tinyurl.com/alpbooker';
             }
         }
@@ -669,18 +700,18 @@
             const input = document.getElementById('shortLinkInput');
             input.select();
             document.execCommand('copy');
-            showToast('TinyURL linki kopyalandı!');
+            showToast('Bağlantı kopyalandı.');
         }
 
         async function exportAsPdf() {
             showToast('PDF derleniyor...');
             const el = document.getElementById('bookSheetContainer');
-            await html2pdf().from(el).save('alpbook-gercek-gorsel.pdf');
+            await html2pdf().from(el).save('alpbook-proje.pdf');
             closeShareModal();
         }
 
         async function exportAsImage() {
-            showToast('Kapak görseli indiriliyor...');
+            showToast('Kapak indiriliyor...');
             const el = document.getElementById('bookSheetContainer');
             const canvas = await html2canvas(el, { scale: 2 });
             const link = document.createElement('a');
